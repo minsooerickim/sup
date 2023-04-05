@@ -57,3 +57,13 @@ name of compiler: SUP-LC
 - `@` marks the end of a liine (it is equivalent to `;` in c++)
 - SUP-L is **case sensitive**. All reserved words are expressed in lower case.
 - strings are surrounded by `" "`
+
+# Symbols & Tokens
+<!-- where do we find the token names?? do we include @? -->
+| Symbol in Language | Token Name |
+|--------------------|------------|
+|int                 |INTEGER     |
+|[]                  |ARRAY       |
+|sup                 |IF          |
+|vibin               |THEN        |
+|wbu                 |ELSE        |
