@@ -109,4 +109,4 @@ name of compiler: SUP-LC
 |wbu                 |ELSE        |
 |chillin             |WHILE       |
 |continue            |CONTINUE    |
-|break               |BREAK       |
+|stop                |BREAK       |
