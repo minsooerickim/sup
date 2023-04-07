@@ -34,7 +34,7 @@ name of compiler: SUP-LC
     - `x > y` would equal true
     - `x != y` would equal true
 - While loop (including "break" and "continue" loop control statements)
-  - `chilin` (while)
+  - `chillin` (while)
   - `stop` (break)
   - `continue` (continue) come back to it later?
   - for ex. I can do the following
@@ -91,6 +91,22 @@ name of compiler: SUP-LC
 |--------------------|------------|
 |int                 |INTEGER     |
 |[]                  |ARRAY       |
+|@                   |SEMICOLON   |
+|-                   |SUB         |
+|+                   |ADD         |
+|*                   |MULT        |
+|/                   |DIV         |
+|%                   |MOD         |
+|==                  |EQ          |
+|!=                  |NEQ         |
+|<                   |LT          |
+|>                   |GT          |
+|<=                  |LTE         |
+|>=                  |GTE         |
+|==                  |EQ          |
 |sup                 |IF          |
 |vibin               |THEN        |
 |wbu                 |ELSE        |
+|chillin             |WHILE       |
+|continue            |CONTINUE    |
+|break               |BREAK       |
