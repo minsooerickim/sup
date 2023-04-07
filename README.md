@@ -36,14 +36,14 @@ name of compiler: SUP-LC
 - While loop (including "break" and "continue" loop control statements)
   - `chillin` (while)
   - `stop` (break)
-  - `continue` (continue) come back to it later?
+  - `yessir` (continue)
   - for ex. I can do the following
       - ```
         int i = 0@
         chillin(i < 10)#
           sup(i == 4)#
             i++@
-            continue@
+            yessir@
             #
           sup(i==5)#
             stop@
@@ -108,5 +108,5 @@ name of compiler: SUP-LC
 |vibin               |THEN        |
 |wbu                 |ELSE        |
 |chillin             |WHILE       |
-|continue            |CONTINUE    |
+|yessir              |CONTINUE    |
 |stop                |BREAK       |
