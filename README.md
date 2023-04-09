@@ -15,8 +15,10 @@ name of compiler: SUP-LC
   - SUP-L is a **Zero-based** array indexing.
     - this is how you would access the 3rd element in the array, `array_name`
       - `array_name[2]@`
-- Assignment statements (raidah)
+- Assignment statements
   - `=`
+    - `x = y` the left variable gets assigned the value of the right variable
+    - `int y = 3@ x = 2*y@` x would equal 6
 - Arithmetic operators (e.g., “+”, “-”, “*”, “/”)
   - `+, -, *, /`
     - `int x = 5@`
@@ -25,13 +27,15 @@ name of compiler: SUP-LC
     - `x - y` would equal 0
     - `x / y` would equal 1
     - `x * y` would equal 25
-- Relational operators (e.g., “<”, “==”, “>”, “!=”)
-  - `<, ==, >, !=`
+- Relational operators (e.g., “<”, “==”, “>”, “!=”, "<=", ">=")
+  - `<, ==, >, !=, <=, >=`
     - `int x = 6@`
     - `int y = 5@`
     - `x < y` would equal false
     - `x == y` would equal false
     - `x > y` would equal true
+    - `x >= y` would equal true
+    - `x <= y` would equal false
     - `x != y` would equal true
 - While loop (including "break" and "continue" loop control statements)
   - `chillin` (while)
@@ -71,17 +75,63 @@ name of compiler: SUP-LC
         #
         ```
       - the above code snippet will print out "flag is true" if the flag variable is true and "flag is false" if the flag is false
-- Read and write statements (cin, cout equivalent in C/C++) (raidah)
-  - `supin ->` (cin)
-  - `supout <-` (cout)
-- Comments (raidah)
+- Read and Write statements (cin, cout equivalent in C/C++)
+  - `supin ->` (std::cin)
+    - accepts input from standard input device (inputs from user)
+  - `supout <-` (std::cout)
+    - displays or prints to the screen
+  - Example:
+      - ```
+        int num@
+        supout <- "Enter Your Favorite Number: "@
+        supin -> num@
+        supout <- "The Favorite Number is: " <- num@
+        ```
+      - the above code snippet asks the user to input an integer then it prints out the user's choice.
+      If user enters 13, the program prints "The Favorite Number is: 13"
+- New Lines
+  - `next` (equivalent to endl in C++)
+    - marks beginning of a new line, used usually in write statements
+  - Example: 
+    - ```
+      supout <- "Hello World!" <- next@
+      ```
+- Comments
   - `;)` (single line)
+    - Used to indicate a single comment line
   - `:) (:` (multi line)
-- Functions (that can take multiple scalar arguments and return a single scalar result) (raidah)
-  - function_name(parameters) return_type #code#
+    - Used to indicate a block of comment, multiples lines
+  - Example:
+      - ```
+        ;) sort the vector here
+
+        :) Time complexity explanation ... 
+           ... ... ...
+           etc etc (:
+        ```
+- Functions (that can take multiple scalar arguments and return a single scalar result)
+  - function_name(type parameter1, type parameter2, ...) return_type #code#
+    - represents the Function Prototype for SUP-L
+- Example:
+    - ```
+      supfib(int supnum) int #
+        sup( supnum <= 1)#
+          return supnum@
+        #
+        return supfib(supnum - 1) + supfib(supnum - 2)@
+      #
+      int main()#
+        int supnum = 6@
+        supout <- supfib(supnum) <- next@
+        return 0@
+      #
+      ```
+    - The above code snippet represents the fibonacci function written in SUP-L and is called in the main.
+    Given a number, supnum, we can pass it into the supfib() function to get the supnum-th fibonacci number. In this case the program prints out 8. The recursive function takes in an integer variable and returns an integer as well. There is a base case that is taken care of using a sup(if) statement. Result is printed out in main using supout <- (cout).    
 
 ## additional notes
 - `@` marks the end of a line (it is equivalent to `;` in c++)
+- `#` opening and closing brackets for functions, loops, conditional statements etc(equivalent to { })
 - SUP-L is **case sensitive**. All reserved words are expressed in lower case.
 - strings are surrounded by `" "`
 
@@ -92,6 +142,7 @@ name of compiler: SUP-LC
 |int                 |INTEGER     |
 |[]                  |ARRAY       |
 |@                   |SEMICOLON   |
+|#                   |BRACKET     |
 |-                   |SUB         |
 |+                   |ADD         |
 |*                   |MULT        |
@@ -110,3 +161,9 @@ name of compiler: SUP-LC
 |chillin             |WHILE       |
 |yessir              |CONTINUE    |
 |stop                |BREAK       |
+|supin ->            |READ        |
+|supout <-           |WRITE       |
+|next                |NEWLINE     |
+|;)                  |COMMENT     |
+|:) (:               |COMMENT     |
+
