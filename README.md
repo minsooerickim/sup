@@ -120,7 +120,7 @@ name of compiler: SUP-LC
         #
         return supfib(supnum - 1) + supfib(supnum - 2)@
       #
-      int main()#
+      main() int #
         int supnum = 6@
         supout <- supfib(supnum) <- next@
         return 0@
