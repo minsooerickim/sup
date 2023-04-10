@@ -54,7 +54,7 @@ name of compiler: SUP-LC
             #
         #
         ```
-      - the above code snippet will enter the while loop (chillin) if i < 10. If i == 4, then i will be incremented and continued (continue). Next, if i == 5, then we break from the loop (stop).
+      - the above code snippet will enter the while loop (chillin) if i < 10. If i == 4, then i will be incremented and continued (yessir). Next, if i == 5, then we break from the loop (stop).
 - If-then-else statements
   - SUP-L uses the keywords `sup`, `vibin`, `wbu` in place of `if`, `then`, `else` respectively.
   - `sup`
