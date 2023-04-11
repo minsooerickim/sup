@@ -1,0 +1,21 @@
+;) This is a simple loop with a break statement
+
+main() int #
+
+  int i@
+
+  i = 0@
+  chillin i <= 10 #
+    return i@
+
+    sup (i > 3) #
+     vibin #
+      stop@
+     #
+    #
+
+    i = i + 1@
+
+  #
+  return 0@
+#
