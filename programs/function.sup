@@ -1,0 +1,24 @@
+add(int a, int b) int #
+    return a+b@
+#
+
+mult(int a, int b) int #
+    return a * b@
+#
+
+main() int#
+    int a@
+    int b@
+    int c@
+    int d@
+
+    a = 100@
+    b = 50@
+    c = add(a, b)@
+    supout <- c@ ;) should print 150
+
+    d = mult(c, a+b)@
+    supout <- d@ ;) should print "22500", since 22500 = 150*150@
+    
+    return 0@
+#

@@ -75,10 +75,10 @@ name of compiler: SUP-LC
         #
         ```
       - the above code snippet will print out "flag is true" if the flag variable is true and "flag is false" if the flag is false
-- Read and Write statements (cin, cout equivalent in C/C++)
-  - `supin ->` (std::cin)
+- Read and Write statements (cin, cout equivalent in C/C++ with the shift operators)
+  - `supin ->` (std::cin >>)
     - accepts input from standard input device (inputs from user)
-  - `supout <-` (std::cout)
+  - `supout <-` (std::cout <<)
     - displays or prints to the screen
   - Example:
       - ```
@@ -90,11 +90,12 @@ name of compiler: SUP-LC
       - the above code snippet asks the user to input an integer then it prints out the user's choice.
       If user enters 13, the program prints "The Favorite Number is: 13"
 - New Lines
-  - `next` (equivalent to endl in C++)
+  - `next` (equivalent to endl in C++) and `\s` (equivalent to \n in C/C++)
     - marks beginning of a new line, used usually in write statements
   - Example: 
     - ```
       supout <- "Hello World!" <- next@
+      supout <- "Hello World!\s"@
       ```
 - Comments
   - `;)` (single line)
@@ -134,6 +135,11 @@ name of compiler: SUP-LC
 - `#` opening and closing brackets for functions, loops, conditional statements etc(equivalent to { })
 - SUP-L is **case sensitive**. All reserved words are expressed in lower case.
 - strings are surrounded by `" "`
+- Valid Identifiers
+  - variable or functions names must start and end with an alphabet(uppercase, lowercase). They cannot start with a number or any special characters. The names can contain numbers but no special characters.
+- Our language IS case sensitive
+  - for ex. Supin would be considered a read statement.
+- Whitespaces are ignored in sup.
 
 # Symbols & Tokens
 <!-- where do we find the token names?? do we include @? -->
@@ -143,12 +149,13 @@ name of compiler: SUP-LC
 |[]                  |ARRAY       |
 |@                   |SEMICOLON   |
 |#                   |BRACKET     |
+|,                   |COMMA       |
 |-                   |SUB         |
 |+                   |ADD         |
 |*                   |MULT        |
 |/                   |DIV         |
 |%                   |MOD         |
-|==                  |EQ          |
+|=                   |ASSIGNMENT  |
 |!=                  |NEQ         |
 |<                   |LT          |
 |>                   |GT          |
@@ -164,6 +171,5 @@ name of compiler: SUP-LC
 |supin ->            |READ        |
 |supout <-           |WRITE       |
 |next                |NEWLINE     |
-|;)                  |COMMENT     |
-|:) (:               |COMMENT     |
-
+|\s                  |NEWLINE     |
+|return              |RETURN      |
