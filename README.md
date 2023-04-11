@@ -134,6 +134,11 @@ name of compiler: SUP-LC
 - `#` opening and closing brackets for functions, loops, conditional statements etc(equivalent to { })
 - SUP-L is **case sensitive**. All reserved words are expressed in lower case.
 - strings are surrounded by `" "`
+- Valid Identifiers
+  - variable names must start with an alphabet. They cannot start with a number or a special character.
+- our language IS case sensitive
+  - for ex. Supin would be considered a read statement.
+- whitespaces are ignored in sup.
 
 # Symbols & Tokens
 <!-- where do we find the token names?? do we include @? -->
