@@ -16,8 +16,10 @@ int hashtag_count = 0;
 DIGIT [0-9]
 ALPHA [a-zA-Z]
 UNDERSCORE _
-VARIABLE ALPHA(ALPHA|DIGIT|UNDERSCORE)*ALPHA(DIGIT|ALPHA)?
-INVALID_IDENTIFIER {VARIABLE}_+
+VARIABLE ALPHA(ALPHA|DIGIT)*ALPHA(DIGIT|ALPHA)?
+
+VARIABLE_PART ALPHA(ALPHA|DIGIT)*
+INVALID_IDENTIFIER ({VARIABLE_PART})*{UNDERSCORE}({VARIABLE_PART})*
 
 %option yylineno
 
@@ -32,7 +34,7 @@ INVALID_IDENTIFIER {VARIABLE}_+
 <COMMENT>":("       { BEGIN(INITIAL); printf("MULTILINE_COMMENT\n"); }
 
 {DIGIT}+ { printf("INTEGER: %s\n", yytext); integer_count++; }
-{INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, (int)(yytext - yyline_start + 1), yytext); }
+{INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, (int)(yytext - yyline_start + 1), yytext); exit(1); }
 "["      { printf("L_BRACKET\n"); lbracket_count++; }
 "]"      { printf("R_BRACKET\n"); rbracket_count++; }
 "("      { printf("L_PARENT\n"); parenthesis_count++; }
