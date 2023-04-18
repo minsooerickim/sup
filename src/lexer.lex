@@ -54,12 +54,30 @@ INVALID_IDENTIFIER {VARIABLE}_+
 
 %%
 
-int main(void) {
+#include <stdlib.h>
+
+int main(int argc, char *argv[]) {
+    FILE *inputFile;
+
+    if (argc > 1) {
+        inputFile = fopen(argv[1], "r");
+        if (!inputFile) {
+            fprintf(stderr, "Error opening input file: %s\n", argv[1]);
+            exit(1);
+        }
+        yyin = inputFile;
+    }
+
     printf("Ctrl+D to quit\n");
 
     yyline_start = yytext;
     while (yylex()) {
         yyline_start = yytext;
     }
+
+    if (inputFile) {
+        fclose(inputFile);
+    }
+
     return 0;
 }
