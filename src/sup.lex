@@ -21,7 +21,15 @@ INVALID_IDENTIFIER {VARIABLE}_+
 
 %option yylineno
 
+%x COMMENT
+
 %%
+";)".*     { printf("SINGLELINE_COMMENT"); }
+
+":)"      { BEGIN(COMMENT); }
+<COMMENT>[^:]+      { /* do nothing */ }
+<COMMENT>":"        { /* do nothing */ }
+<COMMENT>":("       { BEGIN(INITIAL); printf("MULTILINE_COMMENT\n"); }
 
 {DIGIT}+ { printf("INTEGER: %s\n", yytext); integer_count++; }
 {INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, (int)(yytext - yyline_start + 1), yytext); }
@@ -45,7 +53,7 @@ INVALID_IDENTIFIER {VARIABLE}_+
 ">="      { printf("GTE\n"); }
 "=="      { printf("EQ\n"); }
 " " //do not print anything
-";)".* //do nothing single line comment
+
 {ALPHA}+ { printf("WORD: %s\n", yytext); }
 {VARIABLE}+ { printf("VARIABLE: %s\n", yytext); }
 
