@@ -1,16 +1,24 @@
 %{
-// c code here.
+// c code here
 #include <stdio.h>
 %}
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
 VARIABLE ALPHA(ALPHA|DIGIT)*
-%%
 
+%%
 {DIGIT}+ { printf("INTEGER: %s\n", yytext); }
-{ALPHA}+ { printf("WORD: %s\n", yytext); }
-{VARIABLE}+ { printf("VARIABLE: %s\n", yytext); }
+"sup"      { printf("IF\n"); }
+"vibing"      { printf("THEN\n"); }
+"wbu"      { printf("ELSE\n"); }
+"chillin"      { printf("WHILE\n"); }
+"yessir"      { printf("CONTINUE\n"); }
+"stop"      { printf("BREAK\n"); }
+"supin ->"      { printf("READ\n"); }
+"supout <-"      { printf("WRITE\n"); }
+"return"        { printf("RETURN\n"); }
+"next"      {printf("NEWLINE\n"); }
 "["      { printf("L_BRACKET\n"); }
 "]"      { printf("R_BRACKET\n"); }
 "("     {printf("L_PARENT\n"); }
@@ -30,26 +38,15 @@ VARIABLE ALPHA(ALPHA|DIGIT)*
 "<="      { printf("LTE\n"); }
 ">="      { printf("GTE\n"); }
 "=="      { printf("EQ\n"); }
-"sup"      { printf("IF\n"); }
-"vibing"      { printf("THEN\n"); }
-"wbu"      { printf("ELSE\n"); }
-"chillin"      { printf("WHILE\n"); }
-"yessir"      { printf("CONTINUE\n"); }
-"stop"      { printf("BREAK\n"); }
-"supin ->"      { printf("READ\n"); }
-"supout <-"      { printf("WRITE\n"); }
-"return"        { printf("RETURN\n"); }
-"next"      { printf("NEWLINE\n"); }
 " " //do not print anything
 ";)".* //do nothing single line comment
+{VARIABLE}+ { printf("VARIABLE: %s\n", yytext); }
+{ALPHA}+ { printf("WORD: %s\n", yytext); }
 
-.        { printf("**Error. Unidentified token '%s'\n", yytext); }
-
+.       { printf("**Error, unidentified token %s\n", yytext); }
 %%
 
 int main(void) {
-
-    printf("Ctrl+D to quit\n");
-    yylex();
-
+   printf("Ctrl+D to quit\n");
+   yylex();
 }
