@@ -1,16 +1,23 @@
 %{
 // c code here.
 #include <stdio.h>
+char *yyline_start;
 %}
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
-VARIABLE ALPHA(ALPHA|DIGIT)*
+UNDERSCORE _
+VARIABLE ALPHA(ALPHA|DIGIT|UNDERSCORE)*ALPHA(DIGIT|ALPHA)?
+INVALID_IDENTIFIER {VARIABLE}_+
+
+%option yylineno
+
 %%
 
 {DIGIT}+ { printf("INTEGER: %s\n", yytext); }
 {ALPHA}+ { printf("WORD: %s\n", yytext); }
 {VARIABLE}+ { printf("VARIABLE: %s\n", yytext); }
+{INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, (int)(yytext - yyline_start + 1), yytext); }
 "["      { printf("L_BRACKET\n"); }
 "]"      { printf("R_BRACKET\n"); }
 "("     {printf("L_PARENT\n"); }
@@ -43,13 +50,16 @@ VARIABLE ALPHA(ALPHA|DIGIT)*
 " " //do not print anything
 ";)".* //do nothing single line comment
 
-.        { printf("**Error. Unidentified token '%s'\n", yytext); }
+.        { printf("**Error (line %d, column %d): Unidentified token '%s'\n", yylineno, (int)(yytext - yyline_start + 1), yytext); }
 
 %%
 
 int main(void) {
-
     printf("Ctrl+D to quit\n");
-    yylex();
 
+    yyline_start = yytext;
+    while (yylex()) {
+        yyline_start = yytext;
+    }
+    return 0;
 }
