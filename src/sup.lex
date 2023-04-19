@@ -62,10 +62,10 @@ INVALID_IDENTIFIER ({VARIABLE})*{UNDERSCORE}({VARIABLE})*
 "<="      { printf("LTE\n"); }
 ">="      { printf("GTE\n"); }
 "=="      { printf("EQ\n"); }
-" " //do not print anything
+" "      { /* do nothing */ }
 
-{ALPHA}+ { printf("WORD: %s\n", yytext); }
 {VARIABLE}+ { printf("VARIABLE: %s\n", yytext); }
+{ALPHA}+ { printf("WORD: %s\n", yytext); }
 
 .        { printf("**Error (line %d, column %d): Unidentified token '%s'\n", yylineno, strlen(yytext)+ 5, yytext); }
 
