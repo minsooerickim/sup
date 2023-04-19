@@ -24,7 +24,7 @@ INVALID_IDENTIFIER ({VARIABLE})*{UNDERSCORE}({VARIABLE})*
 %x COMMENT
 
 %%
-";)".*     { printf("SINGLELINE_COMMENT"); }
+";)".* 
 
 ":)"      { BEGIN(COMMENT); }
 <COMMENT>[^:]+      { /* do nothing */ }
@@ -32,7 +32,17 @@ INVALID_IDENTIFIER ({VARIABLE})*{UNDERSCORE}({VARIABLE})*
 <COMMENT>":("       { BEGIN(INITIAL); printf("MULTILINE_COMMENT\n"); }
 
 {DIGIT}+ { printf("INTEGER: %s\n", yytext); integer_count++; }
-{INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, (int)(yytext - yyline_start + 1), yytext); exit(1); }
+{INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, yyline_start + strlen(yytext)+2, yytext); }
+"sup"[^_]      { printf("IF\n"); }
+"vibing"[^_]      { printf("THEN\n"); }
+"wbu"[^_]      { printf("ELSE\n"); }
+"chillin"[^_]      { printf("WHILE\n"); }
+"yessir"[^_]      { printf("CONTINUE\n"); }
+"stop"[^_]      { printf("BREAK\n"); }
+"supin ->"      { printf("READ\n"); }
+"supout <-"      { printf("WRITE\n"); }
+"return"[^_]        { printf("RETURN\n"); }
+"next"[^_]      {printf("NEWLINE\n"); }
 "["      { printf("L_BRACKET\n"); lbracket_count++; }
 "]"      { printf("R_BRACKET\n"); rbracket_count++; }
 "("      { printf("L_PARENT\n"); parenthesis_count++; }
@@ -57,7 +67,7 @@ INVALID_IDENTIFIER ({VARIABLE})*{UNDERSCORE}({VARIABLE})*
 {ALPHA}+ { printf("WORD: %s\n", yytext); }
 {VARIABLE}+ { printf("VARIABLE: %s\n", yytext); }
 
-.        { printf("**Error (line %d, column %d): Unidentified token '%s'\n", yylineno, (int)(yytext - yyline_start + 1), yytext); }
+.        { printf("**Error (line %d, column %d): Unidentified token '%s'\n", yylineno, strlen(yytext)+ 5, yytext); }
 
 %%
 
