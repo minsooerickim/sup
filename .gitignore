@@ -1,2 +1,9 @@
 a.out
 lex.yy.c
+
+# test files
+src/demo.txt
+src/error2demo.txt
+src/errordemo.txt
+src/input.txt
+src/error.txt
