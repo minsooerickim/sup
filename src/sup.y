@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     printf("Ctrl+D to quit\n");
 
     yyline_start = yytext;
-    while (yylex()) {
+    while (yyparse()) {
         yyline_start = yytext;
     }
 
