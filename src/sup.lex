@@ -29,43 +29,43 @@ INVALID_IDENTIFIER ({VARIABLE})*{UNDERSCORE}({VARIABLE})*
 ":)"      { BEGIN(COMMENT); }
 <COMMENT>[^:]+      { /* do nothing */ }
 <COMMENT>":"        { /* do nothing */ }
-<COMMENT>":("       { BEGIN(INITIAL); printf("MULTILINE_COMMENT\n"); }
+<COMMENT>":("       { BEGIN(INITIAL); printf("MULTILINE_COMMENT\n"); return MULTILINE_COMMENT; }
 
-{DIGIT}+ { printf("INTEGER: %s\n", yytext); integer_count++; }
+{DIGIT}+ { printf("INTEGER: %s\n", yytext); integer_count++; return INTEGER; }
 {INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, yyline_start + strlen(yytext)+2, yytext); }
-"sup"[^_]      { printf("IF\n"); }
-"vibing"[^_]      { printf("THEN\n"); }
-"wbu"[^_]      { printf("ELSE\n"); }
-"chillin"[^_]      { printf("WHILE\n"); }
-"yessir"[^_]      { printf("CONTINUE\n"); }
-"stop"[^_]      { printf("BREAK\n"); }
-"supin ->"      { printf("READ\n"); }
-"supout <-"      { printf("WRITE\n"); }
-"return"[^_]        { printf("RETURN\n"); }
-"next"[^_]      {printf("NEWLINE\n"); }
-"["      { printf("L_BRACKET\n"); lbracket_count++; }
-"]"      { printf("R_BRACKET\n"); rbracket_count++; }
-"("      { printf("L_PARENT\n"); parenthesis_count++; }
-")"      { printf("R_PARENT\n"); parenthesis_count++; }
-"#"      { printf("BRACKET\n"); hashtag_count++; }
-"="      { printf("ASSIGNMENT\n"); equal_count++; }
-"+"      { printf("ADD\n"); operator_count++; }
-"-"      { printf("SUB\n"); operator_count++; }
-"*"      { printf("MULT\n"); operator_count++; }
-"/"      { printf("DIV\n"); operator_count++; }
-"%"      { printf("MOD\n"); }
-"@"      { printf("SEMICOLON\n"); }
-","      { printf("COMMA\n"); }
-"!="      { printf("NEQ\n"); }
-"<"      { printf("LT\n"); }
-">"      { printf("GT\n"); }
-"<="      { printf("LTE\n"); }
-">="      { printf("GTE\n"); }
-"=="      { printf("EQ\n"); }
+"sup"[^_]      { printf("IF\n"); return IF; }
+"vibing"[^_]      { printf("THEN\n"); return THEN; }
+"wbu"[^_]      { printf("ELSE\n"); return ELSE; }
+"chillin"[^_]      { printf("WHILE\n"); return WHILE; }
+"yessir"[^_]      { printf("CONTINUE\n"); return CONTINUE; }
+"stop"[^_]      { printf("BREAK\n"); return BREAK; }
+"supin ->"      { printf("READ\n"); return READ; }
+"supout <-"      { printf("WRITE\n"); return WRITE; }
+"return"[^_]        { printf("RETURN\n"); return RETURN; }
+"next"[^_]      {printf("NEWLINE\n"); return NEWLINE; }
+"["      { printf("L_BRACKET\n"); lbracket_count++; return L_BRACKET; }
+"]"      { printf("R_BRACKET\n"); rbracket_count++; return R_BRACKET; }
+"("      { printf("L_PARENT\n"); parenthesis_count++; return L_PARENT; }
+")"      { printf("R_PARENT\n"); parenthesis_count++; return R_PARENT; }
+"#"      { printf("BRACKET\n"); hashtag_count++; return BRACKET; }
+"="      { printf("ASSIGNMENT\n"); equal_count++; return ASSIGNMENT; }
+"+"      { printf("ADD\n"); operator_count++; return ADD; }
+"-"      { printf("SUB\n"); operator_count++; return SUB; }
+"*"      { printf("MULT\n"); operator_count++; return MULT; }
+"/"      { printf("DIV\n"); operator_count++; return DIV; }
+"%"      { printf("MOD\n"); return MOD; }
+"@"      { printf("SEMICOLON\n"); return SEMICOLON; }
+","      { printf("COMMA\n"); return COMMA; }
+"!="      { printf("NEQ\n"); return NEQ; }
+"<"      { printf("LT\n"); return LT; }
+">"      { printf("GT\n"); return GT; }
+"<="      { printf("LTE\n"); return LTE; }
+">="      { printf("GTE\n"); return GTE; }
+"=="      { printf("EQ\n"); return EQ; }
 " "      { /* do nothing */ }
 
-{VARIABLE}+ { printf("VARIABLE: %s\n", yytext); }
-{ALPHA}+ { printf("WORD: %s\n", yytext); }
+{VARIABLE}+ { printf("VARIABLE: %s\n", yytext); return VARIABLE; }
+{ALPHA}+ { printf("WORD: %s\n", yytext); return WORD; }
 
 .        { printf("**Error (line %d, column %d): Unidentified token '%s'\n", yylineno, strlen(yytext)+ 5, yytext); }
 
