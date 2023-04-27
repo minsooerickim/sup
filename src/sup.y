@@ -3,7 +3,7 @@
 %}
 
 /* INCLUDE ALL tokens used in the .lex file here (all tokens from our README) */
-%token INTEGER, ARRAY, SEMICOLON, BRACKET, COMMA, SUB, ADD, MULT, DIV, MOD, ASSIGNMENT, NEQ, LT, GT, LTE, GTE, EQ, IF, THEN, ELSE, WHILE, CONTINUE, BREAK, READ, WRITE, NEWLINE, RETURN
+%token INTEGER, ARRAY, SEMICOLON, BRACKET, COMMA, SUB, ADD, MULT, DIV, MOD, ASSIGNMENT, NEQ, LT, GT, LTE, GTE, EQ, IF, THEN, ELSE, WHILE, CONTINUE, BREAK, READ, WRITE, NEWLINE, RETURN, L_BRACKET, R_BRACKET, L_PARENT, R_PARENT, VARIABLE
 
 /* 'prog_start' is the start for our program */
 %start prog_start
@@ -12,6 +12,9 @@
     /* grammar rules go here */
     prog_start: %empty {printf("prog_start -> epsilon\n");}
                 | functions {printf("prog_start -> functions\n"); };
+    functions: function {printf("functions -> function");} // goes to one function
+                | function functions {printf("functions -> function functions");}; // goes to multiple functions (recursive)
+    function: VARIABLE L_PARENT arguments R_PARENT INTEGER BRACKET statements BRACKET { printf("function -> INT IDENT LPR arguments RPR LBR statements RBR\n")}; //define arguments and statements later
 %%
 
 #include <stdlib.h>
