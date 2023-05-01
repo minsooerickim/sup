@@ -1,3 +1,5 @@
 supfib(int supnum) int #
     int hello@
+    int bye@
+    someFunction(hello, bye)@
 #
