@@ -1,6 +1,10 @@
 %{
 // c code here
 #include <stdio.h>
+
+#define YY_DECL int yylex(void)
+#include "y.tab.h"
+
 char *yyline_start;
 
 int integer_count = 0;
@@ -71,39 +75,39 @@ INVALID_IDENTIFIER ({VARIABLE})*{UNDERSCORE}({VARIABLE})*
 
 %%
 
-#include <stdlib.h>
+// #include <stdlib.h>
 
-int main(int argc, char *argv[]) {
-    FILE *inputFile;
+// int main(int argc, char *argv[]) {
+//     FILE *inputFile;
 
-    if (argc > 1) {
-        inputFile = fopen(argv[1], "r");
-        if (!inputFile) {
-            fprintf(stderr, "Error opening input file: %s\n", argv[1]);
-            exit(1);
-        }
-        yyin = inputFile;
-    }
+//     if (argc > 1) {
+//         inputFile = fopen(argv[1], "r");
+//         if (!inputFile) {
+//             fprintf(stderr, "Error opening input file: %s\n", argv[1]);
+//             exit(1);
+//         }
+//         yyin = inputFile;
+//     }
 
-    printf("Ctrl+D to quit\n");
+//     printf("Ctrl+D to quit\n");
 
-    yyline_start = yytext;
-    while (yylex()) {
-        yyline_start = yytext;
-    }
+//     yyline_start = yytext;
+//     while (yylex()) {
+//         yyline_start = yytext;
+//     }
 
-    if (inputFile) {
-        fclose(inputFile);
-    }
+//     if (inputFile) {
+//         fclose(inputFile);
+//     }
 
-    printf("\nSummary:\n");
-    printf("Integers encountered: %d\n", integer_count);
-    printf("Operators encountered: %d\n", operator_count);
-    printf("Parentheses encountered: %d\n", parenthesis_count);
-    printf("Equal signs encountered: %d\n", equal_count);
-    printf("left bracket encounterd: %d\n", lbracket_count);
-    printf("right bracket encounterd: %d\n", rbracket_count);
-    printf("hashtags encounterd: %d\n", hashtag_count);
+//     printf("\nSummary:\n");
+//     printf("Integers encountered: %d\n", integer_count);
+//     printf("Operators encountered: %d\n", operator_count);
+//     printf("Parentheses encountered: %d\n", parenthesis_count);
+//     printf("Equal signs encountered: %d\n", equal_count);
+//     printf("left bracket encounterd: %d\n", lbracket_count);
+//     printf("right bracket encounterd: %d\n", rbracket_count);
+//     printf("hashtags encounterd: %d\n", hashtag_count);
 
-    return 0;
-}
+//     return 0;
+// }
