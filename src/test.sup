@@ -1,0 +1,6 @@
+supfib(int supnum) int #
+    sup( supnum <= 1)#
+        return supnum@
+    #
+    return supfib(supnum - 1) + supfib(supnum - 2)@
+#
