@@ -20,8 +20,8 @@ int hashtag_count = 0;
 DIGIT [0-9]
 ALPHA [a-zA-Z]
 UNDERSCORE _
-VARIABLE ALPHA(ALPHA|DIGIT)*
-INVALID_IDENTIFIER ({VARIABLE})*{UNDERSCORE}({VARIABLE})*
+IDENT {ALPHA}(ALPHA|DIGIT)*
+INVALID_IDENTIFIER ({IDENT})*{UNDERSCORE}({IDENT})*
 
 %option yylineno
 
@@ -35,41 +35,41 @@ INVALID_IDENTIFIER ({VARIABLE})*{UNDERSCORE}({VARIABLE})*
 <COMMENT>":"        { /* do nothing */ }
 <COMMENT>":("       { BEGIN(INITIAL); printf("MULTILINE_COMMENT\n"); return MULTILINE_COMMENT; }
 
-{DIGIT}+ { printf("INTEGER: %s\n", yytext); integer_count++; return INTEGER; }
+"int"[^_]      { return INT; }
+{DIGIT}+ { integer_count++; return INTEGER; }
 {INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, yyline_start + strlen(yytext)+2, yytext); }
-"sup"[^_]      { printf("IF\n"); return IF; }
-"vibing"[^_]      { printf("THEN\n"); return THEN; }
-"wbu"[^_]      { printf("ELSE\n"); return ELSE; }
-"chillin"[^_]      { printf("WHILE\n"); return WHILE; }
-"yessir"[^_]      { printf("CONTINUE\n"); return CONTINUE; }
-"stop"[^_]      { printf("BREAK\n"); return BREAK; }
-"supin ->"      { printf("READ\n"); return READ; }
-"supout <-"      { printf("WRITE\n"); return WRITE; }
-"return"[^_]        { printf("RETURN\n"); return RETURN; }
-"next"[^_]      {printf("NEWLINE\n"); return NEWLINE; }
-"["      { printf("L_BRACKET\n"); lbracket_count++; return L_BRACKET; }
-"]"      { printf("R_BRACKET\n"); rbracket_count++; return R_BRACKET; }
-"("      { printf("L_PARENT\n"); parenthesis_count++; return L_PARENT; }
-")"      { printf("R_PARENT\n"); parenthesis_count++; return R_PARENT; }
-"#"      { printf("BRACKET\n"); hashtag_count++; return BRACKET; }
-"="      { printf("ASSIGNMENT\n"); equal_count++; return ASSIGNMENT; }
-"+"      { printf("ADD\n"); operator_count++; return ADD; }
-"-"      { printf("SUB\n"); operator_count++; return SUB; }
-"*"      { printf("MULT\n"); operator_count++; return MULT; }
-"/"      { printf("DIV\n"); operator_count++; return DIV; }
-"%"      { printf("MOD\n"); return MOD; }
-"@"      { printf("SEMICOLON\n"); return SEMICOLON; }
-","      { printf("COMMA\n"); return COMMA; }
-"!="      { printf("NEQ\n"); return NEQ; }
-"<"      { printf("LT\n"); return LT; }
-">"      { printf("GT\n"); return GT; }
-"<="      { printf("LTE\n"); return LTE; }
-">="      { printf("GTE\n"); return GTE; }
-"=="      { printf("EQ\n"); return EQ; }
+"sup"[^_]      { return IF; }
+"vibing"[^_]      { return THEN; }
+"wbu"[^_]      { return ELSE; }
+"chillin"[^_]      { return WHILE; }
+"yessir"[^_]      { return CONTINUE; }
+"stop"[^_]      { return BREAK; }
+"supin ->"      { return READ; }
+"supout <-"      { return WRITE; }
+"return"[^_]        { return RETURN; }
+"next"[^_]      { return NEWLINE; }
+"["      { lbracket_count++; return L_BRACKET; }
+"]"      { rbracket_count++; return R_BRACKET; }
+"("      { parenthesis_count++; return L_PARENT; }
+")"      { parenthesis_count++; return R_PARENT; }
+"#"      { hashtag_count++; return BRACKET; }
+"="      { equal_count++; return ASSIGNMENT; }
+"+"      { operator_count++; return ADD; }
+"-"      { operator_count++; return SUB; }
+"*"      { operator_count++; return MULT; }
+"/"      { operator_count++; return DIV; }
+"%"      { return MOD; }
+"@"      { return SEMICOLON; }
+","      { return COMMA; }
+"!="      { return NEQ; }
+"<"      { return LT; }
+">"      { return GT; }
+"<="      { return LTE; }
+">="      { return GTE; }
+"=="      { return EQ; }
 " "      { /* do nothing */ }
 
-{VARIABLE}+ { printf("VARIABLE: %s\n", yytext); return VARIABLE; }
-{ALPHA}+ { printf("WORD: %s\n", yytext); return WORD; }
+{IDENT}+ { return IDENT; }
 
 .        { printf("**Error (line %d, column %d): Unidentified token '%s'\n", yylineno, strlen(yytext)+ 5, yytext); }
 
