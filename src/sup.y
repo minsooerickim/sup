@@ -35,8 +35,16 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-
-    yyin = stdin;
+    FILE *inputFile;
+    
+    if (argc > 1) {
+        inputFile = fopen(argv[1], "r");
+        if (!inputFile) {
+            fprintf(stderr, "Error opening input file: %s\n", argv[1]);
+            exit(1);
+        }
+        yyin = inputFile;
+    }
 
     do {
         printf("Parse.\n");
