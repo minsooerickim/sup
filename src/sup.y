@@ -28,8 +28,12 @@
                     | COMMA argument repeat_arguments {printf("repeat_arguments -> COMMA argument repeat_arguments\n");}
     argument: %empty {printf("argument -> epsilon\n");}
                 | INT IDENT {printf("argument -> INT IDENT\n");}
-
     statements: %empty {printf("statements -> epsilon\n");}
+                | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
+    statement:  %empty {printf("statement -> epsilon\n");}
+                | declaration {printf("statement -> declaration\n");}
+    declaration: %empty {printf("declaration -> epsilon\n");}
+                | INT IDENT {printf("declaration -> INT IDENT\n");}
 %%
 
 #include <stdlib.h>
