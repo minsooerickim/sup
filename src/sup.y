@@ -10,7 +10,7 @@
 %}
 
 /* INCLUDE ALL tokens used in the .lex file here (all tokens from our README) */
-%token INTEGER ARRAY SEMICOLON BRACKET COMMA SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE NEWLINE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT VARIABLE WORD MULTILINE_COMMENT
+%token INT INTEGER ARRAY SEMICOLON BRACKET COMMA SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE NEWLINE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT IDENT MULTILINE_COMMENT
 
 /* 'prog_start' is the start for our program */
 %start prog_start
@@ -19,17 +19,17 @@
     /* grammar rules go here */
     prog_start: %empty {printf("prog_start -> epsilon\n");}
                 | functions {printf("prog_start -> functions\n"); };
-    functions: function {printf("functions -> function");} // goes to one function
-                | function functions {printf("functions -> function functions");}; // goes to multiple functions (recursive)
-    function: VARIABLE L_PARENT arguments R_PARENT INTEGER BRACKET statements BRACKET { printf("function -> INT IDENT LPR arguments RPR LBR statements RBR\n");} //define arguments and statements later
+    functions: function {printf("functions -> function\n");} // goes to one function
+                | function functions {printf("functions -> function functions\n");}; // goes to multiple functions (recursive)
+    function: IDENT L_PARENT arguments R_PARENT INT BRACKET statements BRACKET { printf("function -> IDENT L_PARENT arguments R_PARENT INT BRACKET statements BRACKET\n");} //define arguments and statements later
     arguments: %empty {printf("arguments -> epsilon\n");}
-                | argument repeat_arguments {printf("arguments -> argument repeat_arguments");}
-    repeat_arguments: %empty {printf("repeat_arguments -> epsilon");}
-                    | COMMA argument repeat_arguments {printf("repeat_arguments -> COMMA argument repeat_arguments");}
-    argument: %empty {printf("argument -> epsilon");}
-                | INTEGER VARIABLE {printf("argument -> INTEGER VARIABLE");}
+                | argument repeat_arguments {printf("arguments -> argument repeat_arguments\n");}
+    repeat_arguments: %empty {printf("repeat_arguments -> epsilon\n");}
+                    | COMMA argument repeat_arguments {printf("repeat_arguments -> COMMA argument repeat_arguments\n");}
+    argument: %empty {printf("argument -> epsilon\n");}
+                | INT IDENT {printf("argument -> INT IDENT\n");}
 
-    statements: %empty {printf("argument -> epsilon");}
+    statements: %empty {printf("statements -> epsilon\n");}
 %%
 
 #include <stdlib.h>
@@ -50,6 +50,14 @@ int main(int argc, char *argv[]) {
         printf("Parse.\n");
         yyparse();
     } while(!feof(yyin));
+
+    /* terminal input method */
+    /* yyin = stdin;
+
+    do {
+        printf("Parse.\n");
+        yyparse();
+    } while(!feof(yyin)); */
     
     printf("Parsing done!\n");
     return 0;
