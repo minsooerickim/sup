@@ -24,10 +24,10 @@
     function: VARIABLE L_PARENT arguments R_PARENT INTEGER BRACKET statements BRACKET { printf("function -> INT IDENT LPR arguments RPR LBR statements RBR\n");} //define arguments and statements later
     arguments: %empty {printf("arguments -> epsilon\n");}
                 | argument repeat_arguments {printf("arguments -> argument repeat_arguments");}
-    repeat_arguments: %empty {print("repeat_arguments -> epsilon");}
-                    | COMMA argument repeat_arguments {print("repeat_arguments -> COMMA argument repeat_arguments");}
+    repeat_arguments: %empty {printf("repeat_arguments -> epsilon");}
+                    | COMMA argument repeat_arguments {printf("repeat_arguments -> COMMA argument repeat_arguments");}
     argument: %empty {printf("argument -> epsilon");}
-                | INTEGER VARIABLE {print("argument -> INTEGER VARIABLE");}
+                | INTEGER VARIABLE {printf("argument -> INTEGER VARIABLE");}
 
     statements: %empty {printf("argument -> epsilon");}
 %%
