@@ -32,8 +32,15 @@
                 | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
     statement:  %empty {printf("statement -> epsilon\n");}
                 | declaration {printf("statement -> declaration\n");}
-    declaration: %empty {printf("declaration -> epsilon\n");}
-                | INT IDENT {printf("declaration -> INT IDENT\n");}
+                | function_call {printf("statement -> function_call\n");}
+    declaration: INT IDENT {printf("declaration -> INT IDENT\n");}
+    function_call: IDENT L_PARENT args R_PARENT {printf("function_call -> IDENT L_PARENT args R_PARENT\n");}
+    args: %empty {printf("args -> epsilon\n");}
+        | arg repeat_args {printf("args -> IDENT repeat_args\n");}
+    arg: %empty {printf("arg -> epsilon\n");}
+        | IDENT {printf("arg -> IDENT\n");}
+    repeat_args: %empty {printf("repeat_args -> epsilon\n");}
+                | COMMA arg repeat_args {printf("repeat_args -> COMMA arg repeat_args");}
 %%
 
 #include <stdlib.h>
