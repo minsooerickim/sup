@@ -11,10 +11,10 @@ name of compiler: SUP-LC
   - `[]`
     - the square brackets refer to an array
   - here is an example of declaring an integer array of size 5.
-    - `int array_name[5]@`
+    - `int arrayName[5]@`
   - SUP-L is a **Zero-based** array indexing.
-    - this is how you would access the 3rd element in the array, `array_name`
-      - `array_name[2]@`
+    - this is how you would access the 3rd element in the array, `arrayName`
+      - `arrayName[2]@`
 - Assignment statements
   - `=`
     - `x = y` the left variable gets assigned the value of the right variable
