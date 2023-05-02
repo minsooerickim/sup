@@ -19,6 +19,7 @@
     /* grammar rules go here */
     prog_start: %empty {printf("prog_start -> epsilon\n");}
                 | functions {printf("prog_start -> functions\n"); };
+                | statements {printf("prog_start -> statements\n");}
     functions: function {printf("functions -> function\n");} // goes to one function
                 | function functions {printf("functions -> function functions\n");}; // goes to multiple functions (recursive)
     function: IDENT L_PARENT arguments R_PARENT INT BRACKET statements BRACKET { printf("function -> IDENT L_PARENT arguments R_PARENT INT BRACKET statements BRACKET\n");} //define arguments and statements later
@@ -34,6 +35,9 @@
                 | declaration {printf("statement -> declaration\n");}
                 | function_call {printf("statement -> function_call\n");}
     declaration: INT IDENT {printf("declaration -> INT IDENT\n");}
+                | INT IDENT L_BRACKET array_size R_BRACKET {printf("declaration -> INT IDENT L_BRACKET array_size R_BRACKET SEMICOLON\n");}
+    array_size: %empty {printf("array_size -> epsilon\n");}
+                | INTEGER {printf("array_size -> INTEGER\n");}
     function_call: IDENT L_PARENT args R_PARENT {printf("function_call -> IDENT L_PARENT args R_PARENT\n");}
     args: %empty {printf("args -> epsilon\n");}
         | arg repeat_args {printf("args -> IDENT repeat_args\n");}
