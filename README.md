@@ -136,7 +136,7 @@ name of compiler: SUP-LC
 - SUP-L is **case sensitive**. All reserved words are expressed in lower case.
 - strings are surrounded by `" "`
 - Valid Identifiers
-  - variable or functions names must start and end with an alphabet(uppercase, lowercase). They cannot start with a number or any special characters. The names can contain numbers but no special characters.
+  - variable or functions names must start with an alphabet(uppercase, lowercase). They cannot start with a number or any special characters. The names can contain numbers but no special characters.
 - Our language IS case sensitive
   - for ex. Supin would be considered a read statement.
 - Whitespaces are ignored in sup.
