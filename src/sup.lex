@@ -19,9 +19,10 @@ int hashtag_count = 0;
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
+SPECIALCHARS [$%~<>`^*&?.\"\'\s;:!(){}]
 UNDERSCORE _
-IDENT {ALPHA}(ALPHA|DIGIT)*
-INVALID_IDENTIFIER ({IDENT})*{UNDERSCORE}({IDENT})*
+IDENT {ALPHA}({ALPHA}|{DIGIT})*
+INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 
 %option yylineno
 
@@ -37,7 +38,6 @@ INVALID_IDENTIFIER ({IDENT})*{UNDERSCORE}({IDENT})*
 
 "int"[^_]      { return INT; }
 {DIGIT}+ { integer_count++; return INTEGER; }
-{INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, yyline_start + strlen(yytext)+2, yytext); }
 "sup"[^_]      { return IF; }
 "vibing"[^_]      { return THEN; }
 "wbu"[^_]      { return ELSE; }
@@ -70,7 +70,7 @@ INVALID_IDENTIFIER ({IDENT})*{UNDERSCORE}({IDENT})*
 " "      { /* do nothing */ }
 
 {IDENT}+ { return IDENT; }
-
+{INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, yyline_start + strlen(yytext)+2, yytext); }
 .        { printf("**Error (line %d, column %d): Unidentified token '%s'\n", yylineno, strlen(yytext)+ 5, yytext); }
 
 %%
