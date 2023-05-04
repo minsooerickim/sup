@@ -35,6 +35,7 @@
                 | declaration {printf("statement -> declaration\n");}
                 | function_call {printf("statement -> function_call\n");}
                 | array_access {printf("statement -> array_access\n");}
+                | assignment {printf("statement -> assignmen\n");}
     declaration: INT IDENT {printf("declaration -> INT IDENT\n");}
                 | INT IDENT L_BRACKET array_size R_BRACKET {printf("declaration -> INT IDENT L_BRACKET array_size R_BRACKET SEMICOLON\n");}
     array_size: %empty {printf("array_size -> epsilon\n");}
@@ -47,6 +48,10 @@
     repeat_args: %empty {printf("repeat_args -> epsilon\n");}
                 | COMMA arg repeat_args {printf("repeat_args -> COMMA arg repeat_args\n");}
     array_access: IDENT L_BRACKET INTEGER R_BRACKET
+    assignment: IDENT ASSIGNMENT IDENT {printf("assignment -> IDENT EQ IDENT\n");}
+                | IDENT ASSIGNMENT INTEGER {printf("assignment -> IDENT EQ INTEGER\n");}
+                | INT IDENT ASSIGNMENT IDENT {printf("assignment -> INT IDENT EQ IDENT\n");}
+                | INT IDENT ASSIGNMENT INTEGER {printf("assignment -> INT IDENT EQ INTEGER\n");}
 %%
 
 #include <stdlib.h>
