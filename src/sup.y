@@ -47,6 +47,12 @@
     repeat_args: %empty {printf("repeat_args -> epsilon\n");}
                 | COMMA arg repeat_args {printf("repeat_args -> COMMA arg repeat_args\n");}
     array_access: IDENT L_BRACKET INTEGER R_BRACKET
+    assignment: declaration EQ statement
+    addition: INT ADD INT SEMICOLON
+    subtraction: INT SUB INT SEMICOLON
+    multiplication: INT MULT INT SEMICOLON
+    division: INT DIV INT SEMICOLON
+    modulo: INT MOD INT SEMICOLON
 %%
 
 #include <stdlib.h>
