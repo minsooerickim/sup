@@ -69,8 +69,7 @@
             | GTE {printf("compare -> GTE\n");}
             | LTE {printf("compare -> LTE\n");}
             | NEQ {printf("compare -> NEQ\n");}
-    ifactions: %empty {printf("ifactions -> epsilon\n");}
-                | statements {printf("ifactions -> statements\n");}
+    ifactions: statements {printf("ifactions -> statements\n");}
                 | statements BREAK SEMICOLON {printf("ifactions -> statements BREAK SEMICOLON\n");}
                 | statements CONTINUE SEMICOLON {printf("ifactions -> statements CONTINUE SEMICOLON\n");}
                 | BREAK SEMICOLON {printf("ifactions -> BREAK SEMICOLON\n");}
@@ -79,7 +78,6 @@
     write: WRITE QUOTE content QUOTE SEMICOLON {printf("write -> WRITE QUOTE content QUOTE SEMICOLON\n");}
             | WRITE IDENT content SEMICOLON {printf("read -> READ IDENT content SEMICOLON\n");}
     content: %empty {printf("content -> epsilon\n");}
-            | content {printf("content -> content\n");} //?? how to print out the display?
             | NEWLINE {printf("content -> NEWLINE\n");}
     array_access: IDENT L_BRACKET INTEGER R_BRACKET
     assignment: IDENT ASSIGNMENT IDENT {printf("assignment -> IDENT EQ IDENT\n");}
