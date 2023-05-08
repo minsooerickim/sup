@@ -35,7 +35,7 @@
                 | declaration {printf("statement -> declaration\n");}
                 | function_call {printf("statement -> function_call\n");}
                 | array_access {printf("statement -> array_access\n");}
-                | assignment {printf("statement -> assignmen\n");}
+                | assignment {printf("statement -> assignment\n");}
     declaration: INT IDENT {printf("declaration -> INT IDENT\n");}
                 | INT IDENT L_BRACKET array_size R_BRACKET {printf("declaration -> INT IDENT L_BRACKET array_size R_BRACKET SEMICOLON\n");}
     array_size: %empty {printf("array_size -> epsilon\n");}
