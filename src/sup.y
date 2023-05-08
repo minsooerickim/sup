@@ -48,10 +48,10 @@
     repeat_args: %empty {printf("repeat_args -> epsilon\n");}
                 | COMMA arg repeat_args {printf("repeat_args -> COMMA arg repeat_args\n");}
     array_access: IDENT L_BRACKET INTEGER R_BRACKET
-    assignment: IDENT ASSIGNMENT IDENT {printf("assignment -> IDENT EQ IDENT\n");}
-                | IDENT ASSIGNMENT INTEGER {printf("assignment -> IDENT EQ INTEGER\n");}
-                | INT IDENT ASSIGNMENT IDENT {printf("assignment -> INT IDENT EQ IDENT\n");}
-                | INT IDENT ASSIGNMENT INTEGER {printf("assignment -> INT IDENT EQ INTEGER\n");}
+    assignment: IDENT ASSIGNMENT IDENT {printf("assignment -> IDENT ASSIGNMENT IDENT\n");}
+                | IDENT ASSIGNMENT INTEGER {printf("assignment -> IDENT ASSIGNMENT INTEGER\n");}
+                | INT IDENT ASSIGNMENT IDENT {printf("assignment -> INT IDENT ASSIGNMENT IDENT\n");}
+                | INT IDENT ASSIGNMENT INTEGER {printf("assignment -> INT IDENT ASSIGNMENT INTEGER\n");}
     addition: INT ADD INT SEMICOLON
     subtraction: INT SUB INT SEMICOLON
     multiplication: INT MULT INT SEMICOLON
