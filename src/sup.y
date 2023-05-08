@@ -27,8 +27,7 @@
                 | argument repeat_arguments {printf("arguments -> argument repeat_arguments\n");}
     repeat_arguments: %empty {printf("repeat_arguments -> epsilon\n");}
                     | COMMA argument repeat_arguments {printf("repeat_arguments -> COMMA argument repeat_arguments\n");}
-    argument: %empty {printf("argument -> epsilon\n");}
-                | INT IDENT {printf("argument -> INT IDENT\n");}
+    argument: INT IDENT {printf("argument -> INT IDENT\n");}
     statements: %empty {printf("statements -> epsilon\n");}
                 | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
     statement:  %empty {printf("statement -> epsilon\n");}
