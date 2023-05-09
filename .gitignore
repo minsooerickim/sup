@@ -7,3 +7,11 @@ src/error2demo.txt
 src/errordemo.txt
 src/input.txt
 src/error.txt
+
+# generated files
+src/a.out
+src/lex.yy.c
+src/y.tab.c
+src/y.tab.h
+src/y.output
+src/parser
