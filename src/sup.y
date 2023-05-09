@@ -84,6 +84,9 @@
                 | INT IDENT ASSIGNMENT INTEGER {printf("assignment -> INT IDENT EQ INTEGER\n");}
                 | IDENT ASSIGNMENT operations {printf("assignment -> IDENT EQ operations\n");} //there is no operation without assignment
                 | INT IDENT ASSIGNMENT operations {printf("assignment -> INT IDENT EQ operations\n");} //int a = 3+4
+                | array_access ASSIGNMENT INTEGER {printf("assignment -> array_access EQ INTEGER\n");}
+                | array_access ASSIGNMENT IDENT {printf("assignment -> array_access EQ IDENT\n");}
+                | array_access ASSIGNMENT operations {printf("assignment -> array_access EQ operations\n");}
     operations: IDENT operation IDENT {printf("operations -> IDENT operation IDENT\n");}
                 | IDENT operation INTEGER {printf("operations -> IDENT operation INTEGER\n");}
                 | INTEGER operation IDENT {printf("operations -> INTEGER operation IDENT\n");}
