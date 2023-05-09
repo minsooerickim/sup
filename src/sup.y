@@ -32,9 +32,8 @@
     argument: INT IDENT {printf("argument -> INT IDENT\n");}
     statements: %empty {printf("statements -> epsilon\n");}
                 | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
-                | ifs {printf("statements -> ifs\n");}
-                | whiles {printf("statements -> whiles\n");}
-                | terminals {printf("statements -> terminals\n");}
+                | ifs statements{printf("statements -> ifs\n");}
+                | whiles statements{printf("statements -> whiles\n");}
     statement:  %empty {printf("statement -> epsilon\n");}
                 | declaration {printf("statement -> declaration\n");}
                 | function_call {printf("statement -> function_call\n");}
@@ -56,10 +55,10 @@
     arg: %empty {printf("arg -> epsilon\n");}
         | IDENT {printf("arg -> IDENT\n");}
         | operations {printf("arg -> statement\n");}
-    ifs: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements BRACKET else BRACKET {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements BRACKET else BRACKET\n");}
+    ifs: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements BRACKET else BRACKET\n");}
     else: %empty {printf("else -> epsilon\n");}
         | ELSE BRACKET statements BRACKET {printf("else -> ELSE BRACKET statements BRACKET\n");}
-    whiles: WHILE L_PARENT comparison R_PARENT BRACKET statements BRACKET {printf("while -> WHILE L_PARENT comparison R_PARENT BRACKET statements BRACKET\n");}
+    whiles: WHILE L_PARENT comparison R_PARENT BRACKET statements terminals BRACKET {printf("while -> WHILE L_PARENT comparison R_PARENT BRACKET statements BRACKET\n");}
     comparison: IDENT compare IDENT {printf("comparison -> IDENT compare IDENT\n");}
                 | IDENT compare INTEGER {printf("comparison -> IDENT compare INTEGER\n");}
                 | INTEGER compare IDENT {printf("comparison -> INTEGER compare IDENT\n");}

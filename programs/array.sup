@@ -1,4 +1,4 @@
-main() int	# ;) main program
+main ( ) int	# ;) main program
     int a[20]@
     int b@
     int c@
