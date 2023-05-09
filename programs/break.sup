@@ -7,7 +7,7 @@ main() int #
     supout <- i@
     sup (i > 3) #
      vibin #
-      stop@
+      stop @ 
      #
     #
     i = i + 1@
