@@ -1,11 +1,11 @@
-main() int #	;) main program
+main() int #;) main program
     int m@
     int n@
     int o@
 
     supin -> n@
 
-    sup(n >=100) #
+    sup (n >= 100) #
         vibin #
             supout <- n@
         #
@@ -14,5 +14,6 @@ main() int #	;) main program
             supout <- m@
         #
     #
+    supout <- o@
     supout <- o@
 #

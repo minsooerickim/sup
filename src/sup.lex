@@ -14,12 +14,13 @@ int equal_count = 0;
 int lbracket_count = 0;
 int rbracket_count = 0;
 int hashtag_count = 0;
+int line_count = 0;
 
 %}
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
-SPECIALCHARS [$%~<>`^*&?.\"\'\s;:!(){}]
+SPECIALCHARS [$%~<>`^*&?.\"\'\s;:!{}]
 UNDERSCORE _
 IDENT {ALPHA}({ALPHA}|{DIGIT})*
 INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
@@ -29,6 +30,7 @@ INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 %x COMMENT
 
 %%
+"\n"  { line_count++; }
 ";)".* 
 
 ":)"      { BEGIN(COMMENT); }
@@ -39,7 +41,7 @@ INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 "int"[^_]      { return INT; }
 {DIGIT}+ { integer_count++; return INTEGER; }
 "sup"[^_]      { return IF; }
-"vibing"[^_]      { return THEN; }
+"vibin"[^_]      { return THEN; }
 "wbu"[^_]      { return ELSE; }
 "chillin"[^_]      { return WHILE; }
 "yessir"[^_]      { return CONTINUE; }
@@ -47,7 +49,6 @@ INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 "supin ->"      { return READ; }
 "supout <-"      { return WRITE; }
 "return"[^_]        { return RETURN; }
-"next"[^_]      { return NEWLINE; }
 "["      { lbracket_count++; return L_BRACKET; }
 "]"      { rbracket_count++; return R_BRACKET; }
 "("      { parenthesis_count++; return L_PARENT; }

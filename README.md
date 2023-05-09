@@ -147,6 +147,11 @@ name of compiler: SUP-LC
 |--------------------|------------|
 |int                 |INTEGER     |
 |[]                  |ARRAY       |
+|[                   |L_BRACKET   |
+|]                   |R_BRACKET   |
+|(                   |L_PARENT    |
+|)                   |R_PARENT    |
+|"                   |QUOTE       |
 |@                   |SEMICOLON   |
 |#                   |BRACKET     |
 |,                   |COMMA       |
@@ -170,6 +175,4 @@ name of compiler: SUP-LC
 |stop                |BREAK       |
 |supin ->            |READ        |
 |supout <-           |WRITE       |
-|next                |NEWLINE     |
-|\s                  |NEWLINE     |
 |return              |RETURN      |
