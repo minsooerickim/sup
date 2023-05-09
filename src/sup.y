@@ -30,6 +30,9 @@
     argument: INT IDENT {printf("argument -> INT IDENT\n");}
     statements: %empty {printf("statements -> epsilon\n");}
                 | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
+                | ifs {printf("statements -> ifs\n");}
+                | whiles {printf("statements -> whiles\n");}
+                | terminals {printf("statements -> terminals\n");}
     statement:  %empty {printf("statement -> epsilon\n");}
                 | declaration {printf("statement -> declaration\n");}
                 | function_call {printf("statement -> function_call\n");}
@@ -37,8 +40,6 @@
                 | array_access {printf("statement -> array_access\n");}
                 | assignment {printf("statement -> assignment\n");}
                 | operations {printf("statement -> operations\n");}
-                | ifs {printf("statement -> ifs\n");}
-                | whiles {printf("statement -> whiles\n");}
                 | read {printf("statement -> read\n");}
                 | write {printf("statement -> write\n");}
     declaration: INT IDENT {printf("declaration -> INT IDENT\n");}
@@ -53,14 +54,10 @@
     arg: %empty {printf("arg -> epsilon\n");}
         | IDENT {printf("arg -> IDENT\n");}
         | operations {printf("arg -> statement\n");}
-    ifs: if {printf("ifs -> if\n");}
-        | if ifs {printf("ifs -> if ifs\n");} //nested if statements
-    if: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET else BRACKET {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET else BRACKET\n");}
+    ifs: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements BRACKET else BRACKET {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements BRACKET else BRACKET\n");}
     else: %empty {printf("else -> epsilon\n");}
-        | ELSE BRACKET ifactions BRACKET {printf("else -> ELSE BRACKET ifactions BRACKET\n");}
-    whiles: while {printf("whiles -> while\n");}
-            | while whiles {printf("whiles -> while whiles\n");} //nested while loops
-    while: WHILE L_PARENT comparison R_PARENT BRACKET ifactions BRACKET {printf("while -> WHILE L_PARENT comparison R_PARENT BRACKET ifactions BRACKET\n");}
+        | ELSE BRACKET statements BRACKET {printf("else -> ELSE BRACKET statements BRACKET\n");}
+    whiles: WHILE L_PARENT comparison R_PARENT BRACKET statements BRACKET {printf("while -> WHILE L_PARENT comparison R_PARENT BRACKET statements BRACKET\n");}
     comparison: IDENT compare IDENT {printf("comparison -> IDENT compare IDENT\n");}
                 | IDENT compare INTEGER {printf("comparison -> IDENT compare INTEGER\n");}
                 | INTEGER compare IDENT {printf("comparison -> INTEGER compare IDENT\n");}
@@ -71,7 +68,6 @@
             | GTE {printf("compare -> GTE\n");}
             | LTE {printf("compare -> LTE\n");}
             | NEQ {printf("compare -> NEQ\n");}
-    ifactions: statements terminals {printf("ifactions -> statements terminals\n");}
     terminals: %empty {printf("terminals -> epsilon\n");}
             | BREAK SEMICOLON {printf("terminals -> BREAK SEMICOLON\n");}
             | CONTINUE SEMICOLON {printf("terminals -> CONTINUE SEMICOLON\n");}
