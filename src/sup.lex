@@ -19,7 +19,7 @@ int hashtag_count = 0;
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
-SPECIALCHARS [$%~<>`^*&?.\"\'\s;:!(){}]
+SPECIALCHARS [$%~<>`^*&?.\"\'\s;:!{}]
 UNDERSCORE _
 IDENT {ALPHA}({ALPHA}|{DIGIT})*
 INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
