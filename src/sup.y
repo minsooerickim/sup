@@ -55,10 +55,10 @@
     arg: %empty {printf("arg -> epsilon\n");}
         | IDENT {printf("arg -> IDENT\n");}
         | operations {printf("arg -> statement\n");}
-    ifs: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements BRACKET else BRACKET\n");}
+    ifs: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET\n");}
     else: %empty {printf("else -> epsilon\n");}
-        | ELSE BRACKET statements BRACKET {printf("else -> ELSE BRACKET statements BRACKET\n");}
-    whiles: WHILE L_PARENT comparison R_PARENT BRACKET statements terminals BRACKET {printf("while -> WHILE L_PARENT comparison R_PARENT BRACKET statements BRACKET\n");}
+        | ELSE BRACKET statements terminals BRACKET {printf("else -> ELSE BRACKET statements terminals BRACKET\n");}
+    whiles: WHILE L_PARENT comparison R_PARENT BRACKET statements terminals BRACKET {printf("while -> WHILE L_PARENT comparison R_PARENT BRACKET statements terminals BRACKET\n");}
     comparison: IDENT compare IDENT {printf("comparison -> IDENT compare IDENT\n");}
                 | IDENT compare INTEGER {printf("comparison -> IDENT compare INTEGER\n");}
                 | INTEGER compare IDENT {printf("comparison -> INTEGER compare IDENT\n");}
@@ -70,8 +70,8 @@
             | LTE {printf("compare -> LTE\n");}
             | NEQ {printf("compare -> NEQ\n");}
     terminals: %empty {printf("terminals -> epsilon\n");}
-            | BREAK SEMICOLON {printf("terminals -> BREAK SEMICOLON\n");}
-            | CONTINUE SEMICOLON {printf("terminals -> CONTINUE SEMICOLON\n");}
+            | BREAK SEMICOLON{printf("terminals -> BREAK SEMICOLON\n");}
+            | CONTINUE SEMICOLON{printf("terminals -> CONTINUE SEMICOLON\n");}
     read: READ IDENT {printf("read -> READ IDENT\n");}
     write: WRITE INTEGER {printf("write -> WRITE INTEGER\n");}
             | WRITE IDENT {printf("write -> WRITE IDENT\n");}
