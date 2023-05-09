@@ -175,6 +175,4 @@ name of compiler: SUP-LC
 |stop                |BREAK       |
 |supin ->            |READ        |
 |supout <-           |WRITE       |
-|next                |NEWLINE     |
-|\s                  |NEWLINE     |
 |return              |RETURN      |
