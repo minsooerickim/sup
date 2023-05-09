@@ -14,7 +14,7 @@ int equal_count = 0;
 int lbracket_count = 0;
 int rbracket_count = 0;
 int hashtag_count = 0;
-int line_count = -4;
+int line_count = 0;
 
 %}
 
@@ -30,6 +30,7 @@ INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 %x COMMENT
 
 %%
+"\n"  { line_count++; }
 ";)".* 
 
 ":)"      { BEGIN(COMMENT); }
@@ -68,7 +69,6 @@ INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 ">="      { return GTE; }
 "=="      { return EQ; }
 " "      { /* do nothing */ }
-"\n"  { line_count++; }
 
 {IDENT}+ { return IDENT; }
 {INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, yyline_start + strlen(yytext)+2, yytext); }

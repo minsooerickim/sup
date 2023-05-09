@@ -122,12 +122,12 @@ int main(int argc, char *argv[]) {
         yyin = inputFile;
     }
 
-    int c;
+    /* int c;
     while ((c = fgetc(yyin)) != EOF) { // count newlines in input file
         if (c == '\n') {
             line_count++;
         }
-    }
+    } */
     rewind(yyin); // reset file pointer to beginning of file
 
     do {
