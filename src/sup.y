@@ -44,7 +44,7 @@
                 | read {printf("statement -> read\n");}
                 | write {printf("statement -> write\n");}
     declaration: INT IDENT {printf("declaration -> INT IDENT\n");}
-                | INT IDENT L_BRACKET array_size R_BRACKET {printf("declaration -> INT IDENT L_BRACKET array_size R_BRACKET SEMICOLON\n");}
+                | INT IDENT L_BRACKET array_size R_BRACKET {printf("declaration -> INT IDENT L_BRACKET array_size R_BRACKET\n");}
     array_size: %empty {printf("array_size -> epsilon\n");}
                 | INTEGER {printf("array_size -> INTEGER\n");}
     function_call: IDENT L_PARENT args R_PARENT {printf("function_call -> IDENT L_PARENT args R_PARENT\n");}
@@ -54,11 +54,12 @@
                 | COMMA arg repeat_args {printf("repeat_args -> COMMA arg repeat_args\n");}
     arg: %empty {printf("arg -> epsilon\n");}
         | IDENT {printf("arg -> IDENT\n");}
+        | operations {printf("arg -> statement\n");}
     ifs: if {printf("ifs -> if\n");}
         | if ifs {printf("ifs -> if ifs\n");} //nested if statements
-    if: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET else {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET\n");}
+    if: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET else BRACKET {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET else BRACKET\n");}
     else: %empty {printf("else -> epsilon\n");}
-        | ELSE BRACKET ifactions BRACKET BRACKET {printf("ELSE BRACKET ifactions BRACKET BRACKET\n");}
+        | ELSE BRACKET ifactions BRACKET {printf("else -> ELSE BRACKET ifactions BRACKET\n");}
     whiles: while {printf("whiles -> while\n");}
             | while whiles {printf("whiles -> while whiles\n");} //nested while loops
     while: WHILE L_PARENT comparison R_PARENT BRACKET ifactions BRACKET {printf("while -> WHILE L_PARENT comparison R_PARENT BRACKET ifactions BRACKET\n");}
@@ -76,9 +77,10 @@
     terminals: %empty {printf("terminals -> epsilon\n");}
             | BREAK SEMICOLON {printf("terminals -> BREAK SEMICOLON\n");}
             | CONTINUE SEMICOLON {printf("terminals -> CONTINUE SEMICOLON\n");}
-    read: READ IDENT SEMICOLON {printf("read -> READ IDENT SEMICOLON\n");}
-    write: WRITE INTEGER {printf("write -> WRITE INTEGER SEMICOLON\n");}
-            | WRITE IDENT {printf("write -> WRITE IDENT SEMICOLON\n");}
+    read: READ IDENT {printf("read -> READ IDENT\n");}
+    write: WRITE INTEGER {printf("write -> WRITE INTEGER\n");}
+            | WRITE IDENT {printf("write -> WRITE IDENT\n");}
+            | WRITE array_access {printf("write -> array_access\n");}
     array_access: IDENT L_BRACKET INTEGER R_BRACKET
     assignment: IDENT ASSIGNMENT IDENT {printf("assignment -> IDENT EQ IDENT\n");}
                 | IDENT ASSIGNMENT INTEGER {printf("assignment -> IDENT EQ INTEGER\n");}
@@ -86,16 +88,24 @@
                 | INT IDENT ASSIGNMENT INTEGER {printf("assignment -> INT IDENT EQ INTEGER\n");}
                 | IDENT ASSIGNMENT operations {printf("assignment -> IDENT EQ operations\n");} //there is no operation without assignment
                 | INT IDENT ASSIGNMENT operations {printf("assignment -> INT IDENT EQ operations\n");} //int a = 3+4
-    operations: IDENT operation IDENT {printf("operations -> IDENT operation IDENT\n");}
-                | IDENT operation INTEGER {printf("operations -> IDENT operation INTEGER\n");}
-                | INTEGER operation IDENT {printf("operations -> INTEGER operation IDENT\n");}
-                | INTEGER operation INTEGER {printf("operations -> INTEGER operation INTEGER\n");}
+                | IDENT ASSIGNMENT function_call {printf("assignment -> IDENT ASSIGNMENT function_call\n");}
+                | INT IDENT ASSIGNMENT function_call {printf("assignment -> INT IDENT ASSIGNMENT function_call\n");}
+                | array_access ASSIGNMENT operations {printf("assignment -> array_access ASSIGNMENT operations\n");}
+                | array_access ASSIGNMENT INTEGER {printf("assignment -> array_access ASSIGNMENT INTEGER\n");}
+                | array_access ASSIGNMENT IDENT {printf("assignment -> array_access ASSIGNMENT IDENT\n");}
+    expr: IDENT {printf("expr -> IDENT\n");}
+        | INTEGER {printf("expr -> INTEGER\n");}
+        | array_access {printf("expr -> array_access");}
+        | L_PARENT expr operation expr R_PARENT {printf("expr -> L_PARENT expr operation expr R_PARENT\n");}
+    operations: expr operation expr {printf("operations -> expr operation expr\n");}
     operation: ADD {printf("operation -> ADD\n");}
                 | SUB {printf("operation -> SUB\n");}
                 | MULT {printf("operation -> MULT\n");}
                 | DIV {printf("operation -> DIV\n");}
                 | MOD {printf("operation -> MOD\n");}
     return: RETURN IDENT {printf("return -> RETURN IDENT\n");} //for right now we can only return a variable
+            | RETURN INTEGER {printf("return -> RETURN INTEGER\n");}
+            | RETURN statement {printf("return -> statement\n");}
 %%
 
 #include <stdlib.h>
