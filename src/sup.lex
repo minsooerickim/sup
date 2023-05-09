@@ -19,7 +19,7 @@ int hashtag_count = 0;
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
-SPECIALCHARS [$%~<>`^*&?.\"\'\s;:!(){}]
+SPECIALCHARS [$%~<>`^*&?.\"\'\s;:!{}]
 UNDERSCORE _
 IDENT {ALPHA}({ALPHA}|{DIGIT})*
 INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
@@ -47,7 +47,6 @@ INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 "supin ->"      { return READ; }
 "supout <-"      { return WRITE; }
 "return"[^_]        { return RETURN; }
-"next"[^_]      { return NEWLINE; }
 "["      { lbracket_count++; return L_BRACKET; }
 "]"      { rbracket_count++; return R_BRACKET; }
 "("      { parenthesis_count++; return L_PARENT; }

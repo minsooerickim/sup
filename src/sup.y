@@ -10,7 +10,7 @@
 %}
 
 /* INCLUDE ALL tokens used in the .lex file here (all tokens from our README) */
-%token INT INTEGER ARRAY SEMICOLON BRACKET COMMA QUOTE SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE NEWLINE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT IDENT MULTILINE_COMMENT
+%token INT INTEGER ARRAY SEMICOLON BRACKET COMMA QUOTE SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT IDENT MULTILINE_COMMENT
 
 /* 'prog_start' is the start for our program */
 %start prog_start
@@ -54,7 +54,9 @@
         | IDENT {printf("arg -> IDENT\n");}
     ifs: if {printf("ifs -> if\n");}
         | if ifs {printf("ifs -> if ifs\n");} //nested if statements
-    if: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET ELSE BRACKET ifactions BRACKET BRACKET {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET ELSE BRACKET ifactions BRACKET BRACKET\n");}
+    if: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET else {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET\n");}
+    else: %empty {printf("else -> epsilon\n");}
+        | ELSE BRACKET ifactions BRACKET BRACKET {printf("ELSE BRACKET ifactions BRACKET BRACKET\n");}
     whiles: while {printf("whiles -> while\n");}
             | while whiles {printf("whiles -> while whiles\n");} //nested while loops
     while: WHILE L_PARENT comparison R_PARENT BRACKET ifactions BRACKET {printf("while -> WHILE L_PARENT comparison R_PARENT BRACKET ifactions BRACKET\n");}
@@ -73,10 +75,8 @@
             | BREAK SEMICOLON {printf("terminals -> BREAK SEMICOLON\n");}
             | CONTINUE SEMICOLON {printf("terminals -> CONTINUE SEMICOLON\n");}
     read: READ IDENT SEMICOLON {printf("read -> READ IDENT SEMICOLON\n");}
-    write: WRITE QUOTE content QUOTE SEMICOLON {printf("write -> WRITE QUOTE content QUOTE SEMICOLON\n");}
-            | WRITE IDENT content SEMICOLON {printf("read -> READ IDENT content SEMICOLON\n");}
-    content: %empty {printf("content -> epsilon\n");}
-            | NEWLINE {printf("content -> NEWLINE\n");}
+    write: WRITE INTEGER {printf("write -> WRITE INTEGER SEMICOLON\n");}
+            | WRITE IDENT {printf("write -> WRITE IDENT SEMICOLON\n");}
     array_access: IDENT L_BRACKET INTEGER R_BRACKET
     assignment: IDENT ASSIGNMENT IDENT {printf("assignment -> IDENT EQ IDENT\n");}
                 | IDENT ASSIGNMENT INTEGER {printf("assignment -> IDENT EQ INTEGER\n");}
