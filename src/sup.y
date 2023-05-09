@@ -68,11 +68,10 @@
             | GTE {printf("compare -> GTE\n");}
             | LTE {printf("compare -> LTE\n");}
             | NEQ {printf("compare -> NEQ\n");}
-    ifactions: statements {printf("ifactions -> statements\n");}
-                | statements BREAK SEMICOLON {printf("ifactions -> statements BREAK SEMICOLON\n");}
-                | statements CONTINUE SEMICOLON {printf("ifactions -> statements CONTINUE SEMICOLON\n");}
-                | BREAK SEMICOLON {printf("ifactions -> BREAK SEMICOLON\n");}
-                | CONTINUE SEMICOLON {printf("ifactions -> CONTINUE SEMICOLON\n");}
+    ifactions: statements terminals {printf("ifactions -> statements terminals\n");}
+    terminals: %empty {printf("terminals -> epsilon\n");}
+            | BREAK SEMICOLON {printf("terminals -> BREAK SEMICOLON\n");}
+            | CONTINUE SEMICOLON {printf("terminals -> CONTINUE SEMICOLON\n");}
     read: READ IDENT SEMICOLON {printf("read -> READ IDENT SEMICOLON\n");}
     write: WRITE QUOTE content QUOTE SEMICOLON {printf("write -> WRITE QUOTE content QUOTE SEMICOLON\n");}
             | WRITE IDENT content SEMICOLON {printf("read -> READ IDENT content SEMICOLON\n");}
