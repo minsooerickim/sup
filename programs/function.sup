@@ -6,7 +6,7 @@ mult(int a, int b) int #
     return a * b@
 #
 
-main() int#
+main() int #
     int a@
     int b@
     int c@
