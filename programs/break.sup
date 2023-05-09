@@ -5,7 +5,7 @@ main() int #
   int i@
 
   i = 0@
-  chillin i <= 10 #
+  chillin (i <= 10) #
     supout <- i@
 
     sup (i > 3) #
