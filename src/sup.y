@@ -55,9 +55,9 @@
         | operations {printf("arg -> statement\n");}
     ifs: if {printf("ifs -> if\n");}
         | if ifs {printf("ifs -> if ifs\n");} //nested if statements
-    if: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET else {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET\n");}
+    if: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET else BRACKET {printf("if -> IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET ifactions BRACKET else BRACKET\n");}
     else: %empty {printf("else -> epsilon\n");}
-        | ELSE BRACKET ifactions BRACKET BRACKET {printf("ELSE BRACKET ifactions BRACKET BRACKET\n");}
+        | ELSE BRACKET ifactions BRACKET {printf("else -> ELSE BRACKET ifactions BRACKET\n");}
     whiles: while {printf("whiles -> while\n");}
             | while whiles {printf("whiles -> while whiles\n");} //nested while loops
     while: WHILE L_PARENT comparison R_PARENT BRACKET ifactions BRACKET {printf("while -> WHILE L_PARENT comparison R_PARENT BRACKET ifactions BRACKET\n");}
@@ -75,7 +75,7 @@
     terminals: %empty {printf("terminals -> epsilon\n");}
             | BREAK SEMICOLON {printf("terminals -> BREAK SEMICOLON\n");}
             | CONTINUE SEMICOLON {printf("terminals -> CONTINUE SEMICOLON\n");}
-    read: READ IDENT SEMICOLON {printf("read -> READ IDENT SEMICOLON\n");}
+    read: READ IDENT {printf("read -> READ IDENT\n");}
     write: WRITE INTEGER {printf("write -> WRITE INTEGER\n");}
             | WRITE IDENT {printf("write -> WRITE IDENT\n");}
             | WRITE array_access {printf("write -> array_access\n");}

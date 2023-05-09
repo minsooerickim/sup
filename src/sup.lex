@@ -39,7 +39,7 @@ INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 "int"[^_]      { return INT; }
 {DIGIT}+ { integer_count++; return INTEGER; }
 "sup"[^_]      { return IF; }
-"vibing"[^_]      { return THEN; }
+"vibin"[^_]      { return THEN; }
 "wbu"[^_]      { return ELSE; }
 "chillin"[^_]      { return WHILE; }
 "yessir"[^_]      { return CONTINUE; }
