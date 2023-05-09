@@ -1,7 +1,8 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
-
+    // int yylineno = 1;
+    extern int line_count;
     extern int yylex();
     extern int yyparse();
     extern FILE* yyin;
@@ -9,6 +10,7 @@
     void yyerror(const char* s);
 %}
 
+%define parse.error verbose
 /* INCLUDE ALL tokens used in the .lex file here (all tokens from our README) */
 %token INT INTEGER ARRAY SEMICOLON BRACKET COMMA QUOTE SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT IDENT MULTILINE_COMMENT
 
@@ -110,6 +112,14 @@ int main(int argc, char *argv[]) {
         yyin = inputFile;
     }
 
+    int c;
+    while ((c = fgetc(yyin)) != EOF) { // count newlines in input file
+        if (c == '\n') {
+            line_count++;
+        }
+    }
+    rewind(yyin); // reset file pointer to beginning of file
+
     do {
         printf("Parse.\n");
         yyparse();
@@ -128,6 +138,6 @@ int main(int argc, char *argv[]) {
 }
 
 void yyerror(const char* s) {
-  fprintf(stderr, "Parse error: %s.", s);
+  fprintf(stderr, "Parse error on line %d: %s\n", line_count, s);
   exit(1);
 }
