@@ -91,10 +91,11 @@
                 | array_access ASSIGNMENT operations {printf("assignment -> array_access ASSIGNMENT operations\n");}
                 | array_access ASSIGNMENT INTEGER {printf("assignment -> array_access ASSIGNMENT INTEGER\n");}
                 | array_access ASSIGNMENT IDENT {printf("assignment -> array_access ASSIGNMENT IDENT\n");}
-    operations: IDENT operation IDENT {printf("operations -> IDENT operation IDENT\n");}
-                | IDENT operation INTEGER {printf("operations -> IDENT operation INTEGER\n");}
-                | INTEGER operation IDENT {printf("operations -> INTEGER operation IDENT\n");}
-                | INTEGER operation INTEGER {printf("operations -> INTEGER operation INTEGER\n");}
+    expr: IDENT {printf("expr -> IDENT\n");}
+        | INTEGER {printf("expr -> INTEGER\n");}
+        | array_access {printf("expr -> array_access");}
+        | L_PARENT expr operation expr R_PARENT {printf("expr -> L_PARENT expr operation expr R_PARENT\n");}
+    operations: expr operation expr {printf("operations -> expr operation expr\n");}
     operation: ADD {printf("operation -> ADD\n");}
                 | SUB {printf("operation -> SUB\n");}
                 | MULT {printf("operation -> MULT\n");}
