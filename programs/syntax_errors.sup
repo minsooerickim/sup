@@ -1,0 +1,5 @@
+supfunc() int #
+    int hello
+    int bye@
+    someFunction(hello, bye)@
+#
