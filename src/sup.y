@@ -78,6 +78,7 @@
     read: READ IDENT SEMICOLON {printf("read -> READ IDENT SEMICOLON\n");}
     write: WRITE INTEGER {printf("write -> WRITE INTEGER\n");}
             | WRITE IDENT {printf("write -> WRITE IDENT\n");}
+            | WRITE array_access {printf("write -> array_access\n");}
     array_access: IDENT L_BRACKET INTEGER R_BRACKET
     assignment: IDENT ASSIGNMENT IDENT {printf("assignment -> IDENT EQ IDENT\n");}
                 | IDENT ASSIGNMENT INTEGER {printf("assignment -> IDENT EQ INTEGER\n");}
@@ -87,6 +88,9 @@
                 | INT IDENT ASSIGNMENT operations {printf("assignment -> INT IDENT EQ operations\n");} //int a = 3+4
                 | IDENT ASSIGNMENT function_call {printf("assignment -> IDENT ASSIGNMENT function_call\n");}
                 | INT IDENT ASSIGNMENT function_call {printf("assignment -> INT IDENT ASSIGNMENT function_call\n");}
+                | array_access ASSIGNMENT operations {printf("assignment -> array_access ASSIGNMENT operations\n");}
+                | array_access ASSIGNMENT INTEGER {printf("assignment -> array_access ASSIGNMENT INTEGER\n");}
+                | array_access ASSIGNMENT IDENT {printf("assignment -> array_access ASSIGNMENT IDENT\n");}
     operations: IDENT operation IDENT {printf("operations -> IDENT operation IDENT\n");}
                 | IDENT operation INTEGER {printf("operations -> IDENT operation INTEGER\n");}
                 | INTEGER operation IDENT {printf("operations -> INTEGER operation IDENT\n");}
