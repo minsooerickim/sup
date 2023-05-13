@@ -1,9 +1,9 @@
 %{
 // c code here
 #include <stdio.h>
-
+#include<string.h>
 #define YY_DECL int yylex(void)
-#include "y.tab.h"
+#include "sup.tab.h"
 
 char *yyline_start;
 
@@ -15,6 +15,9 @@ int lbracket_count = 0;
 int rbracket_count = 0;
 int hashtag_count = 0;
 int line_count = 0;
+
+extern char *identToken;
+extern int numberToken;
 
 %}
 
@@ -70,7 +73,13 @@ INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 "=="      { return EQ; }
 " "      { /* do nothing */ }
 
-{IDENT}+ { return IDENT; }
+{IDENT}+ { 
+    char * token = new char[yyleng];
+    strcpy(token, yytext);
+    yylval.op_val = token;
+    identToken = yytext; 
+    return IDENT; 
+}
 {INVALID_IDENTIFIER} { printf("**Error (line %d, column %d): Invalid identifier '%s'\n", yylineno, yyline_start + strlen(yytext)+2, yytext); }
 .        { printf("**Error (line %d, column %d): Unidentified token '%s'\n", yylineno, strlen(yytext)+ 5, yytext); }
 

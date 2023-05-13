@@ -1,6 +1,10 @@
 %{
     #include <stdio.h>
+    #include <string>
+    #include <vector>
+    #include <string.h>
     #include <stdlib.h>
+
     // int yylineno = 1;
     extern int line_count;
     extern int yylex();
@@ -8,11 +12,33 @@
     extern FILE* yyin;
 
     void yyerror(const char* s);
+
+    // phase 3
+    char *identToken;
+    int numberToken;
+    
+    enum Type { Integer, Array };
+
+    struct CodeNode {
+        std::string code; // generated code as a string.
+        std::string name;
+    };
 %}
 
 %define parse.error verbose
+
+%union {
+  char *op_val;
+  struct CodeNode *node;
+}
+
 /* INCLUDE ALL tokens used in the .lex file here (all tokens from our README) */
-%token INT INTEGER ARRAY SEMICOLON BRACKET COMMA QUOTE SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT IDENT MULTILINE_COMMENT
+%token INT INTEGER ARRAY SEMICOLON BRACKET COMMA QUOTE SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT MULTILINE_COMMENT
+
+%token <op_val> IDENT
+%type  <node>   declaration
+%type  <node> functions
+%type  <node> statements
 
 /* 'prog_start' is the start for our program */
 %start prog_start
@@ -20,8 +46,21 @@
 %%
     /* grammar rules go here */
     prog_start: %empty
-                | functions
-                | statements
+                | functions {
+                    // this happens last.
+                    CodeNode *node = $1;
+                    std::string code = node->code;
+                    printf("Generated code:\n");
+                    printf("%s\n", code.c_str());
+                }
+                | statements {
+                    // this happens last.
+                    CodeNode *node = $1;
+                    std::string code = node->code;
+                    printf("Generated code:\n");
+                    printf("%s\n", code.c_str());
+                }
+
     functions: function // goes to one function
                 | function functions // goes to multiple functions (recursive)
     function: IDENT L_PARENT arguments R_PARENT INT BRACKET statements BRACKET //define arguments and statements later
@@ -43,7 +82,17 @@
                 | operations 
                 | read 
                 | write 
-    declaration: INT IDENT 
+    
+    declaration: INT IDENT {
+        std::string value = $2;
+        Type t = Integer;
+        // add_variable_symbol_table(value, t);
+
+        std::string code = std::string(". ") + value + std::string("\n");
+        CodeNode *node = new CodeNode;
+        node->code = code;
+        $$ = node;
+    } 
                 | INT IDENT L_BRACKET array_size R_BRACKET 
     array_size: %empty 
                 | INTEGER 
