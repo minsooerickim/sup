@@ -44,6 +44,7 @@
 %type  <node>   function
 %type  <node>   statements
 %type  <node>   statement
+%type  <node>   read
 
 
 /* 'prog_start' is the start for our program */
@@ -109,7 +110,7 @@
             // add_variable_symbol_table(value, t);
 
             // TODO: array_size doesn't show up correctly
-            std::string  code = std::string(".[] ") + value + std::string(",") + array_size + std::string("\n");
+            std::string code = std::string(".[] ") + value + std::string(",") + array_size + std::string("\n");
             CodeNode *node = new CodeNode;
             node->code = code;
             $$ = node;
@@ -142,7 +143,14 @@
     terminals: %empty 
             | BREAK SEMICOLON
             | CONTINUE SEMICOLON
-    read: READ IDENT 
+    read: READ IDENT {
+        std::string value = $2;
+
+        std::string code = std::string(".< ") + value + std::string("\n");
+        CodeNode *node = new CodeNode;
+        node->code = code;
+        $$ = node;
+    }
     write: WRITE INTEGER 
             | WRITE IDENT 
             | WRITE array_access 
