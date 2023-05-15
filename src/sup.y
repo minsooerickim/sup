@@ -28,17 +28,23 @@
 %define parse.error verbose
 
 %union {
-  char *op_val;
-  struct CodeNode *node;
+    int int_val;
+    char *op_val;
+    struct CodeNode *node;
 }
 
 /* INCLUDE ALL tokens used in the .lex file here (all tokens from our README) */
-%token INT INTEGER ARRAY SEMICOLON BRACKET COMMA QUOTE SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT MULTILINE_COMMENT
+%token INT ARRAY SEMICOLON BRACKET COMMA QUOTE SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT MULTILINE_COMMENT
 
+%token <int_val> INTEGER
+%type  <int_val> array_size
 %token <op_val> IDENT
 %type  <node>   declaration
-%type  <node> functions
-%type  <node> statements
+%type  <node>   functions
+%type  <node>   function
+%type  <node>   statements
+%type  <node>   statement
+
 
 /* 'prog_start' is the start for our program */
 %start prog_start
@@ -83,17 +89,32 @@
                 | read 
                 | write 
     
-    declaration: INT IDENT {
-        std::string value = $2;
-        Type t = Integer;
-        // add_variable_symbol_table(value, t);
+    declaration: 
+        INT IDENT {
+            std::string value = $2;
+            Type t = Integer;
+            // add_variable_symbol_table(value, t);
 
-        std::string code = std::string(". ") + value + std::string("\n");
-        CodeNode *node = new CodeNode;
-        node->code = code;
-        $$ = node;
-    } 
-                | INT IDENT L_BRACKET array_size R_BRACKET 
+            std::string code = std::string(". ") + value + std::string("\n");
+            CodeNode *node = new CodeNode;
+            node->code = code;
+            $$ = node;
+        } 
+                | 
+        INT IDENT L_BRACKET array_size R_BRACKET {
+            std::string value = $2;
+            std::string array_size = std::to_string($4);
+
+            Type t = Array;
+            // add_variable_symbol_table(value, t);
+
+            // TODO: array_size doesn't show up correctly
+            std::string  code = std::string(".[] ") + value + std::string(",") + array_size + std::string("\n");
+            CodeNode *node = new CodeNode;
+            node->code = code;
+            $$ = node;
+        }
+
     array_size: %empty 
                 | INTEGER 
     function_call: IDENT L_PARENT args R_PARENT 
