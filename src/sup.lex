@@ -42,7 +42,15 @@ INVALID_IDENTIFIER ({ALPHA}|{DIGIT}|{UNDERSCORE}|{SPECIALCHARS})*
 <COMMENT>":("       { BEGIN(INITIAL); printf("MULTILINE_COMMENT\n"); return MULTILINE_COMMENT; }
 
 "int"[^_]      { return INT; }
-{DIGIT}+ { integer_count++; return INTEGER; }
+{DIGIT}+ { 
+    integer_count++; 
+    
+    char * token = new char[yyleng];
+    strcpy(token, yytext);
+    yylval.op_val = token;
+    numberToken = atoi(yytext); 
+    return INTEGER;
+}
 "sup"[^_]      { return IF; }
 "vibin"[^_]      { return THEN; }
 "wbu"[^_]      { return ELSE; }

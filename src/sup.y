@@ -36,9 +36,9 @@
 /* INCLUDE ALL tokens used in the .lex file here (all tokens from our README) */
 %token INT ARRAY SEMICOLON BRACKET COMMA QUOTE SUB ADD MULT DIV MOD ASSIGNMENT NEQ LT GT LTE GTE EQ IF THEN ELSE WHILE CONTINUE BREAK READ WRITE RETURN L_BRACKET R_BRACKET L_PARENT R_PARENT MULTILINE_COMMENT
 
-%token <int_val> INTEGER
-%type  <int_val> array_size
+%token <op_val> INTEGER 
 %token <op_val> IDENT
+%type  <op_val>   array_size
 %type  <node>   declaration
 %type  <node>   functions
 %type  <node>   function
@@ -77,7 +77,14 @@
                     | COMMA argument repeat_arguments 
     argument: INT IDENT 
     statements: %empty 
-                | statement SEMICOLON statements 
+                | statement SEMICOLON statements
+                /* | statement SEMICOLON statements {
+                    CodeNode *stmt1 = $1;
+                    CodeNode *stmt2 = $3;
+                    CodeNode *node = new CodeNode;
+                    node->code = stmt1->code + stmt2->code;
+                    $$ = node;
+                }; */
                 | ifs statements
                 | whiles statements
     statement:  %empty 
@@ -104,12 +111,11 @@
                 | 
         INT IDENT L_BRACKET array_size R_BRACKET {
             std::string value = $2;
-            std::string array_size = std::to_string($4);
+            std::string array_size = $4;
 
             Type t = Array;
             // add_variable_symbol_table(value, t);
 
-            // TODO: array_size doesn't show up correctly
             std::string code = std::string(".[] ") + value + std::string(",") + array_size + std::string("\n");
             CodeNode *node = new CodeNode;
             node->code = code;
