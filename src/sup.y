@@ -76,17 +76,23 @@
     repeat_arguments: %empty
                     | COMMA argument repeat_arguments 
     argument: INT IDENT 
-    statements: %empty 
-                | statement SEMICOLON statements
-                /* | statement SEMICOLON statements {
-                    CodeNode *stmt1 = $1;
-                    CodeNode *stmt2 = $3;
-                    CodeNode *node = new CodeNode;
-                    node->code = stmt1->code + stmt2->code;
-                    $$ = node;
-                }; */
-                | ifs statements
-                | whiles statements
+    statements: 
+        %empty {
+            CodeNode *node = new CodeNode;
+            $$ = node;
+        }
+        | 
+        statement SEMICOLON statements {
+            CodeNode *stmt1 = $1;
+            CodeNode *stmt2 = $3;
+            CodeNode *node = new CodeNode;
+            node->code = stmt1->code + stmt2->code;
+            $$ = node;
+        };
+        | 
+        ifs statements
+        | 
+        whiles statements
     statement:  %empty 
                 | declaration 
                 | function_call 
