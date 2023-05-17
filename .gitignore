@@ -15,3 +15,13 @@ src/y.tab.c
 src/y.tab.h
 src/y.output
 src/parser
+
+# phase 3 generated files
+src/sup.output
+src/phase3
+src/sup.tab.c
+src/sup.tab.h
+
+# phase 3 testing
+src/test.mil
+src/test.sup

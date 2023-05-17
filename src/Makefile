@@ -1,7 +1,9 @@
-all:
-	flex sup.lex
-	bison -v -d --file-prefix=y sup.y
-	gcc -o parser lex.yy.c y.tab.c -lfl
-
+all: phase3
+sup.tab.c sup.tab.h:	sup.y
+	bison -t -v -d sup.y
+lex.yy.c: sup.lex sup.tab.h
+	flex sup.lex 
+phase3: lex.yy.c sup.tab.c sup.tab.h
+	g++ -std=c++11 -o phase3 sup.tab.c lex.yy.c -lfl
 clean:
-	rm -f lexer parser lex.yy.c y.tab.c y.tab.h y.output
+	rm phase3 sup.tab.c lex.yy.c sup.tab.h sup.output
