@@ -330,6 +330,9 @@ int main(int argc, char *argv[]) {
     } while(!feof(yyin)); */
     
     printf("Parsing done!\n");
+
+    print_symbol_table();
+
     return 0;
 }
 
