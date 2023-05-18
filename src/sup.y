@@ -116,11 +116,13 @@
 %type  <node>   declaration
 %type  <node>   functions
 %type  <node>   function
+%type  <node>   function_call
 %type  <node>   statements
 %type  <node>   statement
 %type  <node>   read
 %type  <node>   arguments
 %type  <node>   argument
+%type  <node>   args
 
 
 
@@ -231,7 +233,16 @@
 
     array_size: %empty 
                 | INTEGER 
-    function_call: IDENT L_PARENT args R_PARENT 
+    function_call: IDENT L_PARENT args R_PARENT {
+        std::string value = $1;
+        CodeNode *args = $3;
+
+        std::string code = std::string("call ") + value + std::string("\n");
+        CodeNode *node = new CodeNode;
+
+        node->code = args->code + code;
+        $$ = node;
+    }
     args: %empty 
         | arg repeat_args 
     repeat_args: %empty 
