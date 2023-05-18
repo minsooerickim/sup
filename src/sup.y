@@ -123,6 +123,7 @@
 %type  <node>   arguments
 %type  <node>   argument
 %type  <node>   args
+%type  <node>   arg
 
 
 
@@ -237,6 +238,7 @@
         std::string value = $1;
         CodeNode *args = $3;
 
+        // TODO: syntax on https://www.cs.ucr.edu/~dtan004/proj3/mil.html is a bit different, you need ', dst' but idk how we're supposed to grab that in this grammar
         std::string code = std::string("call ") + value + std::string("\n");
         CodeNode *node = new CodeNode;
 
@@ -248,7 +250,14 @@
     repeat_args: %empty 
                 | COMMA arg repeat_args 
     arg: %empty 
-        | IDENT 
+        | IDENT {
+            std::string value = $1;
+            std::string code = std::string("param ") + value + std::string("\n");
+
+            CodeNode *node = new CodeNode;
+            node->code = code;
+            $$ = node;
+        }
         | operations 
     ifs: IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET 
     else: %empty 
