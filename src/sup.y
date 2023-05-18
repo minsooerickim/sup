@@ -119,6 +119,9 @@
 %type  <node>   statements
 %type  <node>   statement
 %type  <node>   read
+%type  <node>   arguments
+%type  <node>   argument
+
 
 
 /* 'prog_start' is the start for our program */
@@ -144,11 +147,35 @@
 
     functions: function // goes to one function
                 | function functions // goes to multiple functions (recursive)
-    function: IDENT L_PARENT arguments R_PARENT INT BRACKET statements BRACKET //define arguments and statements later
-    arguments: %empty
-                | argument repeat_arguments
+    
+    function: IDENT L_PARENT arguments R_PARENT INT BRACKET statements BRACKET {
+        std::string func_name = $1;
+        CodeNode *arguments = $3;
+        CodeNode *statements  = $7;
+        add_function_to_symbol_table(func_name);
+
+        std::string code = std::string("func ") + func_name + std::string("\n");
+        
+        code += arguments->code;
+        code += statements->code;
+        code += std::string("endfunc\n");
+
+        CodeNode *node = new CodeNode;
+        node->code = code;
+        $$ = node;
+    }
+
+    arguments: 
+        %empty {
+            CodeNode *node = new CodeNode;
+            $$ = node;
+        }
+        | 
+        argument repeat_arguments
+
     repeat_arguments: %empty
-                    | COMMA argument repeat_arguments 
+        | COMMA argument repeat_arguments 
+        
     argument: INT IDENT 
     statements: 
         %empty {
@@ -303,6 +330,9 @@ int main(int argc, char *argv[]) {
     } while(!feof(yyin)); */
     
     printf("Parsing done!\n");
+
+    print_symbol_table();
+
     return 0;
 }
 
