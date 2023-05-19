@@ -172,6 +172,7 @@
         %empty {
             CodeNode *node = new CodeNode;
             $$ = node;
+            node->code = "";
         }
         | 
         argument repeat_arguments
@@ -183,6 +184,7 @@
     statements: 
         %empty {
             CodeNode *node = new CodeNode;
+            node->code = "";
             $$ = node;
         }
         | 
@@ -245,7 +247,12 @@
         node->code = args->code + code;
         $$ = node;
     }
-    args: %empty 
+    args: 
+        %empty {
+            CodeNode *node = new CodeNode;
+            node->code = "";
+            $$ = node;
+        }
         | arg repeat_args 
     repeat_args: %empty 
                 | COMMA arg repeat_args 
