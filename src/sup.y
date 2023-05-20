@@ -113,6 +113,8 @@
 %token <op_val> INTEGER 
 %token <op_val> IDENT
 %type  <op_val>   array_size
+%type  <op_val> function_ident
+
 %type  <node>   declaration
 %type  <node>   functions
 %type  <node>   function
@@ -151,11 +153,11 @@
     functions: function // goes to one function
                 | function functions // goes to multiple functions (recursive)
     
-    function: IDENT L_PARENT arguments R_PARENT INT BRACKET statements BRACKET {
+    function: IDENT {std::string func_name = $1;
+        add_function_to_symbol_table(func_name);} L_PARENT arguments R_PARENT INT BRACKET statements BRACKET {
+        CodeNode *arguments = $4;
         std::string func_name = $1;
-        CodeNode *arguments = $3;
-        CodeNode *statements  = $7;
-        add_function_to_symbol_table(func_name);
+        CodeNode *statements  = $8;
 
         std::string code = std::string("func ") + func_name + std::string("\n");
         
@@ -166,7 +168,13 @@
         CodeNode *node = new CodeNode;
         node->code = code;
         $$ = node;
-    }
+    };
+
+    /* function_ident: IDENT {
+        std::string func_name = $1;
+        add_function_to_symbol_table(func_name);
+        $$ = $1;
+    } */
 
     arguments: 
         %empty {
@@ -181,33 +189,33 @@
         | COMMA argument repeat_arguments 
         
     argument: INT IDENT 
-    statements: 
-        %empty {
-            CodeNode *node = new CodeNode;
-            node->code = "";
-            $$ = node;
-        }
-        | 
+    statements:  
         statement SEMICOLON statements {
             CodeNode *stmt1 = $1;
             CodeNode *stmt2 = $3;
             CodeNode *node = new CodeNode;
             node->code = stmt1->code + stmt2->code;
             $$ = node;
-        };
+        }
         | 
         ifs statements
         | 
         whiles statements
-    statement:  %empty 
-                | declaration 
-                | function_call 
-                | return 
-                | array_access 
-                | assignment 
-                | operations 
-                | read 
-                | write 
+        |
+        %empty {
+            CodeNode *node = new CodeNode;
+            node->code = "";
+            $$ = node;
+        }
+    statement:  
+        | declaration 
+        | function_call 
+        | return 
+        | array_access 
+        | assignment 
+        | operations 
+        | read 
+        | write 
     
     declaration: 
         INT IDENT {
