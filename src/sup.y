@@ -483,38 +483,38 @@
     
     operation: 
         ADD {
-        CodeNode* node = new CodeNode;
-        node->name = std::string("+ ");
-        node->code += "";
-        $$ = node;
+            CodeNode* node = new CodeNode;
+            node->name = std::string("+ ");
+            node->code += "";
+            $$ = node;
         }
         | 
         SUB {
-        CodeNode* node = new CodeNode;
-        node->name = std::string("- ");
-        node->code += "";
-        $$ = node;
+            CodeNode* node = new CodeNode;
+            node->name = std::string("- ");
+            node->code += "";
+            $$ = node;
         }
         | 
         MULT {
-        CodeNode* node = new CodeNode;
-        node->name = std::string("* ");
-        node->code += "";
-        $$ = node;
+            CodeNode* node = new CodeNode;
+            node->name = std::string("* ");
+            node->code += "";
+            $$ = node;
         }
         | 
         DIV {
-        CodeNode* node = new CodeNode;
-        node->name = std::string("/ ");
-        node->code += "";
-        $$ = node;
+            CodeNode* node = new CodeNode;
+            node->name = std::string("/ ");
+            node->code += "";
+            $$ = node;
         }
         | 
         MOD {
-        CodeNode* node = new CodeNode;
-        node->name = std::string("% ");
-        node->code += "";
-        $$ = node;
+            CodeNode* node = new CodeNode;
+            node->name = std::string("% ");
+            node->code += "";
+            $$ = node;
         }
 
     return: 
