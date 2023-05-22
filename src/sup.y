@@ -121,10 +121,11 @@
 %type  <node>   statement
 %type  <node>   read
 %type  <node>   arguments
-%type  <node>   argument
-%type  <node>   assignment
+/* %type  <node>   argument */
+/* %type  <node>   assignment */
 %type  <node>   args
 %type  <node>   arg
+%type <node> operation
 
 
 
@@ -182,15 +183,17 @@
             node->code = "";
         }
         | 
-        argument repeat_arguments
+         repeat_arguments
+         // removed argument
 
     repeat_arguments: 
         %empty
         | 
-        COMMA argument repeat_arguments 
-        
+        COMMA repeat_arguments 
+        // removed argument
+/*         
     argument: 
-        INT IDENT 
+        INT IDENT  */
     
     statements: 
         %empty {
@@ -207,9 +210,9 @@
             $$ = node;
         };
         | 
-        ifs statements
+        /* ifs statements
         | 
-        whiles statements
+        whiles statements */
 
     statement:  
         %empty 
@@ -217,7 +220,7 @@
         | function_call 
         | return 
         | array_access 
-        | assignment 
+        /* | assignment  */
         | operations 
         | read 
         | write 
@@ -294,7 +297,7 @@
         operations 
 
     ifs: 
-        IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET 
+        IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET
     
     else: 
         %empty 
@@ -353,7 +356,7 @@
     array_access: 
         IDENT L_BRACKET INTEGER R_BRACKET
     
-    assignment: 
+    /* assignment: 
         IDENT ASSIGNMENT IDENT { 
             std::string first_var = $1;
             std::string second_var = $3;
@@ -460,14 +463,14 @@
             node->code = std::string("[] ") + std::string($1) + std::string(", ") + $3->name + std::string(", ") + $6->name + std::string("/n");  
             $$ = node;
         }
-        
+         */
     expr: 
-        IDENT {
+        /* IDENT {
             CodeNode *declaration = $1;
             CodeNode *node = new CodeNode;
             node->code = declaration->code;
             $$ = node;
-        }
+        } */
         | 
         INTEGER {}
         | 
@@ -479,15 +482,40 @@
         expr operation expr 
     
     operation: 
-        ADD 
+        ADD {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("+ ");
+        node->code += "";
+        $$ = node;
+        }
         | 
-        SUB 
+        SUB {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("- ");
+        node->code += "";
+        $$ = node;
+        }
         | 
-        MULT 
+        MULT {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("* ");
+        node->code += "";
+        $$ = node;
+        }
         | 
-        DIV 
+        DIV {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("/ ");
+        node->code += "";
+        $$ = node;
+        }
         | 
-        MOD 
+        MOD {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("% ");
+        node->code += "";
+        $$ = node;
+        }
 
     return: 
         RETURN IDENT 
