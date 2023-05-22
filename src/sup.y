@@ -113,6 +113,7 @@
 %token <op_val> INTEGER 
 %token <op_val> IDENT
 %type  <op_val> array_size
+%type  <node>   add_fn_to_symb_tbl
 %type  <node>   declaration
 %type  <node>   functions
 %type  <node>   function
@@ -137,7 +138,7 @@
 %%
     /* grammar rules go here */
     prog_start: 
-        %empty
+        %empty {}
         | 
         functions {
             // this happens last.
@@ -146,14 +147,16 @@
             printf("Generated code:\n");
             printf("%s\n", code.c_str());
         }
+        /*
         | 
         statements {
+            printf("WHY");
             // this happens last.
             CodeNode *node = $1;
             std::string code = node->code;
             printf("Generated code:\n");
             printf("%s\n", code.c_str());
-        }
+        } */
 
     functions: 
         function // goes to one function
@@ -161,11 +164,12 @@
         function functions // goes to multiple functions (recursive)
     
     function: 
-        IDENT L_PARENT arguments R_PARENT INT BRACKET statements BRACKET {
-            std::string func_name = $1;
+        add_fn_to_symb_tbl L_PARENT arguments R_PARENT INT BRACKET statements BRACKET {
+            CodeNode *add_fn_to_symb_tbl_node = $1;
             CodeNode *arguments = $3;
             CodeNode *statements  = $7;
-            add_function_to_symbol_table(func_name);
+
+            std::string func_name = add_fn_to_symb_tbl_node->name;
 
             std::string code = std::string("func ") + func_name + std::string("\n");
             
@@ -175,6 +179,18 @@
 
             CodeNode *node = new CodeNode;
             node->code = code;
+            $$ = node;
+        }
+
+    add_fn_to_symb_tbl:
+        IDENT {
+            std::string func_name = $1;
+            
+            CodeNode *node = new CodeNode;
+            node->code = "";
+            node->name = func_name;
+
+            add_function_to_symbol_table(func_name);
             $$ = node;
         }
 
