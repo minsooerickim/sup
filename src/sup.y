@@ -193,7 +193,17 @@
         COMMA argument repeat_arguments 
         
     argument: 
-        INT IDENT 
+        INT IDENT {
+            std::string value = $2;
+            
+            Type t = Integer;
+            add_variable_to_symbol_table(value, t);
+
+            std::string code = std::string(". ") + value + std::string("\n");
+            CodeNode *node = new CodeNode;
+            node->code = code;
+            $$ = node;
+        }
     
     statements: 
         %empty {
@@ -210,20 +220,24 @@
             $$ = node;
         };
         | 
-        ifs statements
+        ifs statements {}
         | 
-        whiles statements
+        whiles statements {}
 
     statement:  
-        %empty 
+        %empty {
+            CodeNode *node = new CodeNode;
+            node->code = "";
+            $$ = node;
+        }
         | declaration 
         | function_call 
-        | return 
+        | return {}
         | array_access 
         | assignment 
         | operations 
         | read 
-        | write 
+        | write {}
     
     declaration: 
         INT IDENT {
@@ -251,7 +265,7 @@
         }
 
     array_size: 
-        %empty 
+        %empty {}
         | 
         INTEGER 
 
@@ -283,7 +297,11 @@
         COMMA arg repeat_args 
 
     arg: 
-        %empty 
+        %empty {
+            CodeNode *node = new CodeNode;
+            node->code = "";
+            $$ = node;
+        }
         | 
         IDENT {
             std::string value = $1;
@@ -354,27 +372,30 @@
         WRITE array_access 
     
     array_access: 
-        IDENT L_BRACKET INTEGER R_BRACKET {}
+        IDENT L_BRACKET INTEGER R_BRACKET {
+            
+        }
     
     assignment: 
         IDENT ASSIGNMENT IDENT { 
             std::string first_var = $1;
             std::string second_var = $3;
+
             CodeNode *node = new CodeNode;
-            node->code = $3->code;
-            node->code = std::string("= ") + first_var + std::string(", ") + $3->name + std::string("\n");
+            node->code = std::string("= ") + first_var + std::string(", ") + $3 + std::string("\n");
             $$ = node;
         } 
         | 
         IDENT ASSIGNMENT INTEGER {
             std::string first_var = $1;
+            
             CodeNode *node = new CodeNode;
-            node->code = $3->code;
-            node->code = std::string("= ") + first_var + std::string(", ") + $3->name + std::string("\n");
+            node->code = std::string("= ") + first_var + std::string(", ") + $3 + std::string("\n");
             $$ = node;
         } 
+        /*
         | 
-        INT IDENT ASSIGNMENT IDENT { 
+            INT IDENT ASSIGNMENT IDENT { 
             std::string first_var = $2;
             Type t = Integer;
             add_variable_to_symbol_table(first_var, t);
@@ -390,8 +411,8 @@
             node->code = std::string("= ") + first_var + std::string(", ") + $4->name + std::string("\n");
             $$ = node;
         }
-        | 
-        INT IDENT ASSIGNMENT INTEGER {
+        |*/ 
+        /* INT IDENT ASSIGNMENT INTEGER {
             std::string first_var = $2;
             Type t = Integer;
             add_variable_to_symbol_table(first_var, t);
@@ -435,8 +456,8 @@
         | 
         IDENT ASSIGNMENT function_call {}
         | 
-        INT IDENT ASSIGNMENT function_call {}
-        | 
+        INT IDENT ASSIGNMENT function_call {} */
+        /* | 
         array_access ASSIGNMENT operations {
             std::string first_var = $1;
             
@@ -462,14 +483,14 @@
             node->code = $6->code          
             node->code = std::string("[] ") + std::string($1) + std::string(", ") + $3->name + std::string(", ") + $6->name + std::string("/n");  
             $$ = node;
-        }
+        } */
         
     expr: 
         IDENT {
-            CodeNode *declaration = $1;
-            CodeNode *node = new CodeNode;
-            node->code = declaration->code;
-            $$ = node;
+            // CodeNode *declaration = $1;
+            // CodeNode *node = new CodeNode;
+            // node->code = declaration->code;
+            // $$ = node;
         }
         | 
         INTEGER {}
