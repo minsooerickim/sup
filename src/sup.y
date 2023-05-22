@@ -112,7 +112,7 @@
 
 %token <op_val> INTEGER 
 %token <op_val> IDENT
-%type  <op_val>   array_size
+%type  <op_val> array_size
 %type  <node>   declaration
 %type  <node>   functions
 %type  <node>   function
@@ -122,6 +122,7 @@
 %type  <node>   read
 %type  <node>   arguments
 %type  <node>   argument
+%type  <node>   assignment
 %type  <node>   args
 %type  <node>   arg
 
@@ -295,21 +296,122 @@
             | WRITE IDENT 
             | WRITE array_access 
     array_access: IDENT L_BRACKET INTEGER R_BRACKET
-    assignment: IDENT ASSIGNMENT IDENT 
-                | IDENT ASSIGNMENT INTEGER 
-                | INT IDENT ASSIGNMENT IDENT 
-                | INT IDENT ASSIGNMENT INTEGER 
-                | IDENT ASSIGNMENT operations 
-                | INT IDENT ASSIGNMENT operations 
-                | IDENT ASSIGNMENT function_call 
-                | INT IDENT ASSIGNMENT function_call 
-                | array_access ASSIGNMENT operations 
-                | array_access ASSIGNMENT INTEGER 
-                | array_access ASSIGNMENT IDENT 
-    expr: IDENT 
-        | INTEGER 
-        | array_access 
-        | L_PARENT expr operation expr R_PARENT 
+    assignment: IDENT ASSIGNMENT IDENT { 
+        std::string first_var = $1;
+        std::string second_var = $3;
+        CodeNode *node = new CodeNode;
+        node->code = $3->code;
+        node->code = std::string("= ") + first_var + std::string(", ") + $3->name + std::string("\n");
+        $$ = node;
+    } 
+        | IDENT ASSIGNMENT INTEGER {
+            std::string first_var = $1;
+            CodeNode *node = new CodeNode;
+            node->code = $3->code;
+            node->code = std::string("= ") + first_var + std::string(", ") + $3->name + std::string("\n");
+            $$ = node;
+    } 
+        | INT IDENT ASSIGNMENT IDENT { 
+            std::string first_var = $2;
+            Type t = Integer;
+            add_variable_to_symbol_table(first_var, t);
+
+            std::string code = std::string(". ") + first_var + std::string("\n");
+            CodeNode *node = new CodeNode;
+            node->code = code;
+            $$ = node; 
+
+            Type t = Integer;
+            CodeNode *node = new CodeNode;
+            node->code = $4->code;
+            node->code = std::string("= ") + first_var + std::string(", ") + $4->name + std::string("\n");
+            $$ = node;
+        }
+        | INT IDENT ASSIGNMENT INTEGER {
+            std::string first_var = $2;
+            Type t = Integer;
+            add_variable_to_symbol_table(first_var, t);
+
+            std::string code = std::string(". ") + first_var + std::string("\n");
+            CodeNode *node = new CodeNode;
+            node->code = code;
+            $$ = node; 
+
+            Type t = Integer;
+            CodeNode *node = new CodeNode;
+            node->code = $4->code;
+            node->code = std::string("= ") + first_var + std::string(", ") + $4->name + std::string("\n");
+            $$ = node;
+        }
+        | IDENT ASSIGNMENT operations {
+            std::string first_var = $1;
+            CodeNode *node = new CodeNode;
+            node->code = $3->code;
+            node->code += std::string("= ") + first_var + std::string(", ") + $3->name + std::string("\n");
+            $$ = node;
+        }
+        | INT IDENT ASSIGNMENT operations {
+            std::string first_var = $2;
+            Type t = Integer;
+            add_variable_to_symbol_table(first_var, t);
+
+            std::string code = std::string(". ") + first_var + std::string("\n");
+            CodeNode *node = new CodeNode;
+            node->code = code;
+            $$ = node; 
+
+            Type t = Integer;
+            CodeNode *node = new CodeNode;
+            node->code = $4->code;
+            node->code += std::string("= ") + first_var + std::string(", ") + $4->name + std::string("\n");
+            $$ = node;
+        }
+        | IDENT ASSIGNMENT function_call {
+
+        }
+        | INT IDENT ASSIGNMENT function_call {
+
+        }
+        | array_access ASSIGNMENT operations {
+            std::string first_var = $1;
+            
+            CodeNode *node = new CodeNode;
+            node->code = $6->code           //Q: we are not allowing expressions for array index right?
+            node->code += std::string("[] ") + std::string($1) + std::string(", ") + $3->name + std::string(", ") + $6->name + std::string("/n");  
+            $$ = node;
+        }
+        | array_access ASSIGNMENT INTEGER {
+            std::string first_var = $1;
+            
+            CodeNode *node = new CodeNode;
+            node->code = $6->code          
+            node->code = std::string("[] ") + std::string($1) + std::string(", ") + $3->name + std::string(", ") + $6->name + std::string("/n");  
+            $$ = node;
+
+        }
+        | array_access ASSIGNMENT IDENT {
+            std::string first_var = $1;
+            
+            CodeNode *node = new CodeNode;
+            node->code = $6->code          
+            node->code = std::string("[] ") + std::string($1) + std::string(", ") + $3->name + std::string(", ") + $6->name + std::string("/n");  
+            $$ = node;
+        }
+    expr: IDENT {
+            CodeNode *declaration = $1;
+            CodeNode *node = new CodeNode;
+            node->code = declaration->code;
+            $$ = node;
+    }
+        | INTEGER {
+
+        }
+        | array_access {
+
+        }
+        | L_PARENT expr operation expr R_PARENT {
+            
+        }
     operations: expr operation expr 
     operation: ADD 
                 | SUB 
