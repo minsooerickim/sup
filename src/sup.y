@@ -125,6 +125,9 @@
 %type  <node>   assignment
 %type  <node>   args
 %type  <node>   arg
+%type  <node>   expr
+%type  <node>   operations
+%type  <node>   array_access
 
 
 
@@ -325,7 +328,7 @@
         LTE 
         | 
         NEQ
- 
+
     terminals: 
         %empty 
         | 
@@ -351,7 +354,7 @@
         WRITE array_access 
     
     array_access: 
-        IDENT L_BRACKET INTEGER R_BRACKET
+        IDENT L_BRACKET INTEGER R_BRACKET {}
     
     assignment: 
         IDENT ASSIGNMENT IDENT { 
