@@ -103,7 +103,7 @@
     struct CodeNode {
         std::string code; // generated code as a string.
         std::string name;
-        int int_val;
+        std::string var;
     };
 %}
 
@@ -382,7 +382,7 @@
             CodeNode *operations = $1;
 
             CodeNode *node = new CodeNode;
-            node->code = std::string("param temp\n") +  operations->code;
+            node->code = std::string("param") + operations->var + std::string("\n") +  operations->code;
             $$ = node;
         }
 
@@ -506,15 +506,17 @@
             node->code = $4->code;
             node->code = std::string("= ") + first_var + std::string(", ") + $4->name + std::string("\n");
             $$ = node;
-        }
+        } */
         | 
         IDENT ASSIGNMENT operations {
-            std::string first_var = $1;
+            std::string dst = $1;
+            CodeNode *ops = $3;
+
             CodeNode *node = new CodeNode;
-            node->code = $3->code;
-            node->code += std::string("= ") + first_var + std::string(", ") + $3->name + std::string("\n");
+            node->code = ops->code + std::string("= ") + dst + std::string(", ") + ops->var + std::string("\n");
             $$ = node;
         }
+        /*
         | 
         INT IDENT ASSIGNMENT operations {
             std::string first_var = $2;
@@ -580,11 +582,33 @@
             $$ = node;
         }
         | 
-        INTEGER {}
+        INTEGER {
+            std::string integer = $1;
+
+            CodeNode *node = new CodeNode;
+            node->code = integer;
+            $$ = node;
+        }
         | 
         array_access {}
         | 
-        L_PARENT expr operation expr R_PARENT {}
+        expr operation expr R_PARENT {
+            CodeNode *lhs = $1;
+            CodeNode *rhs = $3;
+            CodeNode *op = $2;
+
+            CodeNode *tmp = new CodeNode;
+
+            Type t = Integer;
+            std::string tmpName = std::string("tempBR" + get_arg_index());
+            add_variable_to_symbol_table(tmpName, t);
+
+            tmp->code = std::string(". ") + tmpName + std::string("\n");
+            tmp->code += op->code + tmpName + std::string(", ") + lhs->code + std::string(", ") + rhs->code + std::string("\n");
+
+            tmp->var = tmpName;
+            $$ = tmp;
+        }
     
     operations: 
         expr operation expr {
@@ -595,11 +619,30 @@
             CodeNode *temp = new CodeNode;
             
             Type t = Integer;
-            std::string tmp = std::string("temp");
+            std::string tmp = std::string("temp" + get_arg_index());
             add_variable_to_symbol_table(tmp, t);
 
-            temp->code = std::string(". temp\n"); //TODO: add to symb table
-            temp->code += op->code + std::string("temp, ") + lhs->code + std::string(", ") + rhs->code + std::string("\n");
+            temp->code = std::string(". ") + tmp + std::string("\n");
+            temp->code += op->code + tmp + std::string(", ") + lhs->code + std::string(", ") + rhs->code + std::string("\n");
+            temp->var = tmp;
+            $$ = temp;
+        }
+        |
+        L_PARENT expr operation expr { //TODO: try to avoid this if poss
+            CodeNode *lhs = $2;
+            CodeNode *rhs = $4;
+            CodeNode *op = $3;
+
+            CodeNode *temp = new CodeNode;
+            
+            Type t = Integer;
+            std::string tmp = std::string("temp" + get_arg_index());
+            add_variable_to_symbol_table(tmp, t);
+
+            temp->code = std::string(". ") + tmp + std::string("\n");
+            temp->code += lhs->code;
+            temp->code += op->code + tmp + std::string(", ") + lhs->var + std::string(", ") + rhs->code + std::string("\n");
+            temp->var = tmp;
             $$ = temp;
         }
     
@@ -650,7 +693,7 @@
 
             CodeNode *node = new CodeNode;
             node->code = stmt->code;
-            node->code += std::string("ret temp\n");
+            node->code += std::string("ret") + stmt->var + std::string("\n");
             $$ = node;
         }
 %%
