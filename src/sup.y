@@ -602,7 +602,7 @@
             CodeNode *tmp = new CodeNode;
 
             Type t = Integer;
-            std::string tmpName = std::string("temp" + get_arg_index());
+            std::string tmpName = std::string("tempbrrr" + get_arg_index());
             add_variable_to_symbol_table(tmpName, t);
 
             tmp->code = std::string(". ") + tmpName + std::string("\n");
@@ -625,7 +625,11 @@
             add_variable_to_symbol_table(tmp, t);
 
             temp->code = std::string(". ") + tmp + std::string("\n");
-            temp->code += op->code + tmp + std::string(", ") + lhs->code + std::string(", ") + rhs->code + std::string("\n");
+            if (lhs->code != lhs->var) {
+                temp->code += lhs->code;
+            }
+
+            temp->code += op->code + tmp + std::string(", ") + lhs->var + std::string(", ") + rhs->var + std::string("\n");
             temp->var = tmp;
             $$ = temp;
         }
