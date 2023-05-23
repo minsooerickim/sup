@@ -129,6 +129,8 @@
 %type  <node>   expr
 %type  <node>   operations
 %type  <node>   array_access
+%type  <node>   repeat_args
+%type  <node>   write
 
 
 
@@ -287,11 +289,11 @@
 
     function_call: 
         IDENT L_PARENT args R_PARENT {
-            std::string value = $1;
+            std::string func_ident = $1;
             CodeNode *args = $3;
 
             // TODO: syntax on https://www.cs.ucr.edu/~dtan004/proj3/mil.html is a bit different, you need ', dst' but idk how we're supposed to grab that in this grammar
-            std::string code = std::string("call ") + value + std::string("\n");
+            std::string code = std::string("call ") + func_ident;
             CodeNode *node = new CodeNode;
 
             node->code = args->code + code;
@@ -305,12 +307,30 @@
             $$ = node;
         }
         | 
-        arg repeat_args
+        arg repeat_args {
+            CodeNode *arg = $1;
+            CodeNode *repeat_arg = $2;
+            
+            CodeNode *node = new CodeNode;
+            node->code = arg->code + repeat_arg->code;
+            $$ = node;
+        }
 
     repeat_args: 
-        %empty 
+        %empty {
+            CodeNode *node = new CodeNode;
+            node->code = "";
+            $$ = node;
+        }
         | 
-        COMMA arg repeat_args 
+        COMMA arg repeat_args {
+            CodeNode *arg = $2;
+            CodeNode *repeat_arg = $3;
+            
+            CodeNode *node = new CodeNode;
+            node->code = arg->code + repeat_arg->code;
+            $$ = node;
+        }
 
     arg: 
         %empty {
@@ -328,7 +348,7 @@
             $$ = node;
         }
         | 
-        operations 
+        operations {}
 
     ifs: 
         IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET 
@@ -381,11 +401,18 @@
         }
     
     write: 
-        WRITE INTEGER 
+        WRITE INTEGER {}
         | 
-        WRITE IDENT 
+        WRITE IDENT {
+            std::string val = $2;
+
+            std::string code = std::string(".> ") + val + std::string("\n");
+            CodeNode *node = new CodeNode;
+            node->code = code;
+            $$ = node;
+        }
         | 
-        WRITE array_access 
+        WRITE array_access {}
     
     array_access: 
         IDENT L_BRACKET INTEGER R_BRACKET {
@@ -468,10 +495,17 @@
             node->code = $4->code;
             node->code += std::string("= ") + first_var + std::string(", ") + $4->name + std::string("\n");
             $$ = node;
+        } */
+        | 
+        IDENT ASSIGNMENT function_call {
+            std::string dst = $1;
+            CodeNode *function_call_node = $3;
+            
+            CodeNode *node = new CodeNode;
+            node->code = function_call_node->code + std::string(", ") + dst + std::string("\n");
+            $$ = node;
         }
-        | 
-        IDENT ASSIGNMENT function_call {}
-        | 
+        /* | 
         INT IDENT ASSIGNMENT function_call {} */
         /* | 
         array_access ASSIGNMENT operations {
