@@ -382,7 +382,7 @@
             CodeNode *operations = $1;
 
             CodeNode *node = new CodeNode;
-            node->code = std::string("param") + operations->var + std::string("\n") +  operations->code;
+            node->code = std::string("param ") + operations->var + std::string("\n") +  operations->code;
             $$ = node;
         }
 
@@ -579,6 +579,7 @@
 
             CodeNode *node = new CodeNode;
             node->code = ident;
+            node->var = ident;
             $$ = node;
         }
         | 
@@ -587,15 +588,16 @@
 
             CodeNode *node = new CodeNode;
             node->code = integer;
+            node->var = integer;
             $$ = node;
         }
         | 
         array_access {}
         | 
-        expr operation expr R_PARENT {
-            CodeNode *lhs = $1;
-            CodeNode *rhs = $3;
-            CodeNode *op = $2;
+        L_PARENT expr operation expr R_PARENT {
+            CodeNode *lhs = $2;
+            CodeNode *rhs = $4;
+            CodeNode *op = $3;
 
             CodeNode *tmp = new CodeNode;
 
@@ -624,24 +626,6 @@
 
             temp->code = std::string(". ") + tmp + std::string("\n");
             temp->code += op->code + tmp + std::string(", ") + lhs->code + std::string(", ") + rhs->code + std::string("\n");
-            temp->var = tmp;
-            $$ = temp;
-        }
-        |
-        L_PARENT expr operation expr { //TODO: try to avoid this if poss; (goes from 1 rr conflict to 2 sr & 1 rr conf)
-            CodeNode *lhs = $2;
-            CodeNode *rhs = $4;
-            CodeNode *op = $3;
-
-            CodeNode *temp = new CodeNode;
-            
-            Type t = Integer;
-            std::string tmp = std::string("temp" + get_arg_index());
-            add_variable_to_symbol_table(tmp, t);
-
-            temp->code = std::string(". ") + tmp + std::string("\n");
-            temp->code += lhs->code;
-            temp->code += op->code + tmp + std::string(", ") + lhs->var + std::string(", ") + rhs->code + std::string("\n");
             temp->var = tmp;
             $$ = temp;
         }
@@ -693,7 +677,7 @@
 
             CodeNode *node = new CodeNode;
             node->code = stmt->code;
-            node->code += std::string("ret") + stmt->var + std::string("\n");
+            node->code += std::string("ret ") + stmt->var + std::string("\n");
             $$ = node;
         }
 %%
