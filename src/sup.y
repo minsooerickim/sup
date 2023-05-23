@@ -120,7 +120,7 @@
 
 %token <op_val> INTEGER 
 %token <op_val> IDENT
-%type  <op_val> array_size
+%type  <int_val> array_size
 %type  <node>   add_fn_to_symb_tbl
 %type  <node>   declaration
 %type  <node>   functions
@@ -292,31 +292,67 @@
         INT IDENT {
             std::string value = $2;
             Type t = Integer;
-            add_variable_to_symbol_table(value, t);
+
+            if (find(value)) {
+                yyerror("The variable has already been declared.");
+            } else {
+                add_variable_to_symbol_table(value, t);
 
             std::string code = std::string(". ") + value + std::string("\n");
             CodeNode *node = new CodeNode;
             node->code = code;
             $$ = node;
+    }
         } 
         | 
         INT IDENT L_BRACKET array_size R_BRACKET {
             std::string value = $2;
-            std::string array_size = $4;
+            std::string array_size = std::to_string($4);
 
             Type t = Array;
+            if (find(value)) {
+                yyerror("The array has already been declared");
+            }
             add_variable_to_symbol_table(value, t);
 
             std::string code = std::string(".[] ") + value + std::string(",") + array_size + std::string("\n");
             CodeNode *node = new CodeNode;
             node->code = code;
+            // std::string error = "The array " + value + " has not been declared\n";
+            // std::string error2 = "The array " + value + " has already been declared\n";
+
+
+            // if (!find(node->name)) {
+            //     yyerror(error.c_str());
+            // }
+            // if (find(node->name)) {
+            //     yyerror(error2.c_str());
+            // }
             $$ = node;
         }
 
     array_size: 
-        %empty {}
-        | 
-        INTEGER 
+        %empty {
+            // Handle the case when no size is specified
+            $$ = 0; // Set the array size to zero or a default value
+        }
+        | INTEGER {
+            // Handle the case when a size is specified
+            int size = std::stoi($1);
+            if (size < 0) {
+                // Report an error for negative array size
+                yyerror("Array size cannot be negative\n");
+            }
+            $$ = size;
+        }
+        | SUB INTEGER {
+            int size = -std::stoi($2);
+            if (size < 0) {
+                // Report an error for negative array size
+                yyerror("Array size cannot be negative\n");
+            }
+            $$ = size;
+        }
 
     function_call: 
         IDENT L_PARENT args R_PARENT {
@@ -585,14 +621,14 @@
         array_access {}
         | 
         L_PARENT expr operation expr R_PARENT {}
-        | IDENT ASSIGNMENT operations {
+        /* | IDENT ASSIGNMENT operations {
             std::string ident = $1;
             CodeNode *op = $3;
 
             CodeNode *node = new CodeNode;
             node->code = std::string("= ") + ident + std::string(", temp\n") + op->code;
             $$ = node;
-        } SEMICOLON
+        } SEMICOLON */
     
     operations: 
         expr operation expr {
