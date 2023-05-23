@@ -27,9 +27,9 @@ func main
 = a, 4
 = b, 2
 . temp8
-. tempbrrr7
-+ tempbrrr7, a, b
-* temp8, tempbrrr7, 7
+. temp7
++ temp7, a, b
+* temp8, temp7, 7
 = c, temp8
 .> c
 endfunc
