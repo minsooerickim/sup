@@ -243,13 +243,18 @@
             std::string value = $2;
             
             Type t = Integer;
-            add_variable_to_symbol_table(value, t);
+            if (!find(value)) {
+                yyerror("The variable has not been declared\n");
+            } else {
+                add_variable_to_symbol_table(value, t);
+            // add_variable_to_symbol_table(value, t);
 
             std::string code = std::string(". ") + value + std::string("\n");
             CodeNode *node = new CodeNode;
             node->code = code;
             node->code += std::string("= ") + value + std::string(", $") + get_arg_index() + std::string("\n"); //FIXME: make it dynamic
             $$ = node;
+            }
         }
     
     statements: 
@@ -288,13 +293,68 @@
         | read 
         | write {}
     
-    declaration: 
+    declaration:
+        INT INT {
+            // std::string value = $2;
+            // Type t = Integer;
+            std::string keyword_error = "The variable int cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        |
+        INT IF {
+            std::string keyword_error = "The variable sup cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        |
+        INT THEN {
+            std::string keyword_error = "The variable vibin cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        |
+        INT ELSE {
+            std::string keyword_error = "The variable wbu cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        |
+        INT WHILE {
+            std::string keyword_error = "The variable chillin cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        |
+        INT CONTINUE {
+            std::string keyword_error = "The variable yessir cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        |
+        INT BREAK {
+            std::string keyword_error = "The variable stop cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        | 
+        INT READ {
+            std::string keyword_error = "The variable supin cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        |
+        INT WRITE {
+            std::string keyword_error = "The variable supout cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        |
+        INT RETURN {
+            std::string keyword_error = "The variable return cannot have the same name as a reserved keyword\n";
+            yyerror(keyword_error.c_str());
+        }
+        |
         INT IDENT {
             std::string value = $2;
             Type t = Integer;
-
+            std::string keyword_error = "The variable " + value + " cannot have the same name as a reserved keyword\n";
+            if ((value == "int") || (value == "sup") || (value == "vibin") || (value == "wbu") || (value == "chillin") || (value == "yessir") || (value == "stop") || (value == "supin") || (value == "supout") || (value == "return")) {
+                yyerror(keyword_error.c_str());
+            }
             if (find(value)) {
-                yyerror("The variable has already been declared.");
+                yyerror("The variable has already been declared\n");
             } else {
                 add_variable_to_symbol_table(value, t);
 
@@ -303,7 +363,7 @@
             node->code = code;
             $$ = node;
     }
-        } 
+        }
         | 
         INT IDENT L_BRACKET array_size R_BRACKET {
             std::string value = $2;
@@ -311,7 +371,7 @@
 
             Type t = Array;
             if (find(value)) {
-                yyerror("The array has already been declared");
+                yyerror("The array has already been declared\n");
             }
             add_variable_to_symbol_table(value, t);
 
@@ -495,15 +555,27 @@
         IDENT ASSIGNMENT IDENT { 
             std::string first_var = $1;
             std::string second_var = $3;
-
+            std::string first_var_error = "The variable " + first_var + " has not been declared yet\n";
+            std::string second_var_error = "The variable " + second_var + " has not been declared yet\n";
+            if (!find(first_var)) {
+                yyerror(first_var_error.c_str());
+            } 
+            else if (!find(second_var)) {
+                yyerror(second_var_error.c_str());
+            }
+            else {
             CodeNode *node = new CodeNode;
             node->code = std::string("= ") + first_var + std::string(", ") + $3 + std::string("\n");
             $$ = node;
+            }
         } 
         | 
         IDENT ASSIGNMENT INTEGER {
             std::string first_var = $1;
-            
+            std::string first_var_error = "The variable " + first_var + " has not been declared yet\n";
+            if (!find(first_var)) {
+                yyerror(first_var_error.c_str());
+            } 
             CodeNode *node = new CodeNode;
             node->code = std::string("= ") + first_var + std::string(", ") + $3 + std::string("\n");
             $$ = node;
