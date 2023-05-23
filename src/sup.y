@@ -600,7 +600,7 @@
             CodeNode *tmp = new CodeNode;
 
             Type t = Integer;
-            std::string tmpName = std::string("tempBR" + get_arg_index());
+            std::string tmpName = std::string("temp" + get_arg_index());
             add_variable_to_symbol_table(tmpName, t);
 
             tmp->code = std::string(". ") + tmpName + std::string("\n");
@@ -628,7 +628,7 @@
             $$ = temp;
         }
         |
-        L_PARENT expr operation expr { //TODO: try to avoid this if poss
+        L_PARENT expr operation expr { //TODO: try to avoid this if poss; (goes from 1 rr conflict to 2 sr & 1 rr conf)
             CodeNode *lhs = $2;
             CodeNode *rhs = $4;
             CodeNode *op = $3;
