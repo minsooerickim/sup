@@ -585,6 +585,14 @@
         array_access {}
         | 
         L_PARENT expr operation expr R_PARENT {}
+        | IDENT ASSIGNMENT operations {
+            std::string ident = $1;
+            CodeNode *op = $3;
+
+            CodeNode *node = new CodeNode;
+            node->code = std::string("= ") + ident + std::string(", temp\n") + op->code;
+            $$ = node;
+        } SEMICOLON
     
     operations: 
         expr operation expr {
