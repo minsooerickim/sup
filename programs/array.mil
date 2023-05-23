@@ -1,0 +1,33 @@
+func main
+.[] a,20
+. b
+. c
+= b, 3
+= c, 5
+. temp2
++ temp2, b, c
+[]= a, 0, temp2
+. temp3
+=[] temp3, a, 0
+.> temp3
+[]= a, 1, 100
+. temp4
+=[] temp4, a, 1
+.> temp4
+[]= a, 2, 200
+. temp5
+=[] temp5, a, 2
+.> temp5
+. temp9
+. temp6
+=[] temp6, a, 0
+. temp7
+=[] temp7, a, 1
+. temp8
++ temp8, temp7, c
+* temp9, temp6, temp8
+[]= a, 3, temp9
+. temp10
+=[] temp10, a, 3
+.> temp10
+endfunc
