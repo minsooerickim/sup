@@ -79,6 +79,13 @@
         f->declarations.push_back(s);
     }
 
+    std::string get_arg_index() {
+        Function *f = get_function();
+        int size = f->declarations.size();
+        std::string str_size = std::to_string(size - 1);
+        return str_size;
+    }
+
     // a function to print out the symbol table to the screen
     // largely for debugging purposes.
     void print_symbol_table(void) {
@@ -96,6 +103,7 @@
     struct CodeNode {
         std::string code; // generated code as a string.
         std::string name;
+        int int_val;
     };
 %}
 
@@ -128,9 +136,12 @@
 %type  <node>   arg
 %type  <node>   expr
 %type  <node>   operations
+%type  <node>   operation
 %type  <node>   array_access
 %type  <node>   repeat_args
 %type  <node>   write
+%type  <node>   return
+%type  <node>   repeat_arguments
 
 
 
@@ -146,24 +157,23 @@
             // this happens last.
             CodeNode *node = $1;
             std::string code = node->code;
-            printf("Generated code:\n");
+            printf("\n");
             printf("%s\n", code.c_str());
         }
-        /*
-        | 
-        statements {
-            printf("WHY");
-            // this happens last.
-            CodeNode *node = $1;
-            std::string code = node->code;
-            printf("Generated code:\n");
-            printf("%s\n", code.c_str());
-        } */
 
     functions: 
-        function // goes to one function
+        function {// goes to one function
+            $$ = $1;
+        }
         | 
-        function functions // goes to multiple functions (recursive)
+        function functions { // goes to multiple functions (recursive)
+            CodeNode *fn = $1;
+            CodeNode *fns = $2;
+
+            CodeNode *node = new CodeNode;
+            node->code = fn->code + fns->code;
+            $$ = node;
+        }
     
     function: 
         add_fn_to_symb_tbl L_PARENT arguments R_PARENT INT BRACKET statements BRACKET {
@@ -199,16 +209,34 @@
     arguments: 
         %empty {
             CodeNode *node = new CodeNode;
-            $$ = node;
             node->code = "";
+            $$ = node;
         }
         | 
-        argument repeat_arguments
+        argument repeat_arguments {
+            CodeNode *arg = $1;
+            CodeNode *args = $2;
+
+            CodeNode *node = new CodeNode;
+            node->code = arg->code + args->code;
+            $$ = node;
+        }
 
     repeat_arguments: 
-        %empty
+        %empty {
+            CodeNode *node = new CodeNode;
+            node->code = "";
+            $$ = node;
+        }
         | 
-        COMMA argument repeat_arguments 
+        COMMA argument repeat_arguments {
+            CodeNode *arg = $2;
+            CodeNode *repeat_arg = $3;
+            
+            CodeNode *node = new CodeNode;
+            node->code = arg->code + repeat_arg->code;
+            $$ = node;
+        }
         
     argument: 
         INT IDENT {
@@ -220,6 +248,7 @@
             std::string code = std::string(". ") + value + std::string("\n");
             CodeNode *node = new CodeNode;
             node->code = code;
+            node->code += std::string("= ") + value + std::string(", $") + get_arg_index() + std::string("\n"); //FIXME: make it dynamic
             $$ = node;
         }
     
@@ -253,7 +282,9 @@
         | return {}
         | array_access 
         | assignment 
-        | operations 
+        | operations {
+            $$ = $1;
+        }
         | read 
         | write {}
     
@@ -292,7 +323,6 @@
             std::string func_ident = $1;
             CodeNode *args = $3;
 
-            // TODO: syntax on https://www.cs.ucr.edu/~dtan004/proj3/mil.html is a bit different, you need ', dst' but idk how we're supposed to grab that in this grammar
             std::string code = std::string("call ") + func_ident;
             CodeNode *node = new CodeNode;
 
@@ -348,7 +378,13 @@
             $$ = node;
         }
         | 
-        operations {}
+        operations {
+            CodeNode *operations = $1;
+
+            CodeNode *node = new CodeNode;
+            node->code = std::string("param temp\n") +  operations->code;
+            $$ = node;
+        }
 
     ifs: 
         IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET 
@@ -537,10 +573,11 @@
         
     expr: 
         IDENT {
-            // CodeNode *declaration = $1;
-            // CodeNode *node = new CodeNode;
-            // node->code = declaration->code;
-            // $$ = node;
+            std::string ident = $1;
+
+            CodeNode *node = new CodeNode;
+            node->code = ident;
+            $$ = node;
         }
         | 
         INTEGER {}
@@ -550,25 +587,72 @@
         L_PARENT expr operation expr R_PARENT {}
     
     operations: 
-        expr operation expr 
+        expr operation expr {
+            CodeNode *lhs = $1;
+            CodeNode *rhs = $3;
+            CodeNode *op = $2;
+
+            CodeNode *temp = new CodeNode;
+            
+            Type t = Integer;
+            std::string tmp = std::string("temp");
+            add_variable_to_symbol_table(tmp, t);
+
+            temp->code = std::string(". temp\n"); //TODO: add to symb table
+            temp->code += op->code + std::string("temp, ") + lhs->code + std::string(", ") + rhs->code + std::string("\n");
+            $$ = temp;
+        }
     
     operation: 
-        ADD 
+        ADD {
+            CodeNode *add = new CodeNode;
+            add->code = "+ ";
+            $$ = add;
+        }
         | 
-        SUB 
+        SUB {
+            CodeNode *add = new CodeNode;
+            add->code = "- ";
+            $$ = add;
+        }
         | 
-        MULT 
+        MULT {
+            CodeNode *add = new CodeNode;
+            add->code = "* ";
+            $$ = add;
+        }
         | 
-        DIV 
+        DIV {
+            CodeNode *add = new CodeNode;
+            add->code = "/ ";
+            $$ = add;
+        }
         | 
-        MOD 
+        MOD {
+            CodeNode *add = new CodeNode;
+            add->code = "% ";
+            $$ = add;
+        }
 
     return: 
-        RETURN IDENT 
+        RETURN IDENT {}
         | 
-        RETURN INTEGER 
+        RETURN INTEGER {
+            std::string val = $2;
+
+            CodeNode *node = new CodeNode;
+            node->code = std::string("ret ") + val + std::string("\n");
+            $$ = node;
+        }
         | 
-        RETURN statement 
+        RETURN statement {
+            CodeNode *stmt = $2;
+
+            CodeNode *node = new CodeNode;
+            node->code = stmt->code;
+            node->code += std::string("ret temp\n");
+            $$ = node;
+        }
 %%
 
 #include <stdlib.h>
@@ -594,7 +678,6 @@ int main(int argc, char *argv[]) {
     rewind(yyin); // reset file pointer to beginning of file
 
     do {
-        printf("Parse.\n");
         yyparse();
     } while(!feof(yyin));
 
@@ -605,8 +688,6 @@ int main(int argc, char *argv[]) {
         printf("Parse.\n");
         yyparse();
     } while(!feof(yyin)); */
-    
-    printf("Parsing done!\n");
 
     print_symbol_table();
 
