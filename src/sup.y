@@ -104,6 +104,7 @@
         std::string code; // generated code as a string.
         std::string name;
         std::string var;
+        std::string arr_idx;
     };
 %}
 
@@ -448,11 +449,30 @@
             $$ = node;
         }
         | 
-        WRITE array_access {}
+        WRITE array_access {
+            CodeNode *arr = $2;
+            
+            CodeNode *tmp = new CodeNode;
+            Type t = Integer;
+            std::string tmpName = std::string("temp" + get_arg_index());
+            tmp->var = tmpName;
+            tmp->code = std::string(". ") + tmpName + std::string("\n");
+            add_variable_to_symbol_table(tmpName, t);
+
+            tmp->code += std::string("=[] ") + tmpName + std::string(", ") + arr->var + std::string(", ") + arr->arr_idx + std::string("\n");
+            tmp->code += std::string(".> ") + tmp->var + std::string("\n");
+            $$ = tmp;
+        }
     
     array_access: 
         IDENT L_BRACKET INTEGER R_BRACKET {
-            
+            std::string arr_ident = $1;
+            std::string arr_idx = $3;
+
+            CodeNode *node = new CodeNode;
+            node->var = arr_ident;
+            node->arr_idx = arr_idx;
+            $$=node;
         }
     
     assignment: 
@@ -545,24 +565,26 @@
         }
         /* | 
         INT IDENT ASSIGNMENT function_call {} */
-        /* | 
+        | 
         array_access ASSIGNMENT operations {
-            std::string first_var = $1;
+            CodeNode *arr = $1;
+            CodeNode *ops = $3;
             
             CodeNode *node = new CodeNode;
-            node->code = $6->code           //Q: we are not allowing expressions for array index right?
-            node->code += std::string("[] ") + std::string($1) + std::string(", ") + $3->name + std::string(", ") + $6->name + std::string("/n");  
+            node->code = ops->code;
+            node->code += std::string("[]= ") + arr->var + std::string(", ") + arr->arr_idx + std::string(", ") + ops->var + std::string("\n");  
             $$ = node;
         }
         | 
         array_access ASSIGNMENT INTEGER {
-            std::string first_var = $1;
+            CodeNode *arr = $1;
+            std::string integer = $3;
             
             CodeNode *node = new CodeNode;
-            node->code = $6->code          
-            node->code = std::string("[] ") + std::string($1) + std::string(", ") + $3->name + std::string(", ") + $6->name + std::string("/n");  
+            node->code += std::string("[]= ") + arr->var + std::string(", ") + arr->arr_idx + std::string(", ") + integer + std::string("\n");  
             $$ = node;
         }
+        /*
         | 
         array_access ASSIGNMENT IDENT {
             std::string first_var = $1;
@@ -592,7 +614,19 @@
             $$ = node;
         }
         | 
-        array_access {}
+        array_access {
+            CodeNode *arr = $1;
+            
+            CodeNode *tmp = new CodeNode;
+            Type t = Integer;
+            std::string tmpName = std::string("temp" + get_arg_index());
+            tmp->var = tmpName;
+            tmp->code = std::string(". ") + tmpName + std::string("\n");
+            add_variable_to_symbol_table(tmpName, t);
+
+            tmp->code += std::string("=[] ") + tmpName + std::string(", ") + arr->var + std::string(", ") + arr->arr_idx + std::string("\n");
+            $$ = tmp;
+        }
         | 
         L_PARENT expr operation expr R_PARENT {
             CodeNode *lhs = $2;
@@ -602,11 +636,19 @@
             CodeNode *tmp = new CodeNode;
 
             Type t = Integer;
-            std::string tmpName = std::string("tempbrrr" + get_arg_index());
+            std::string tmpName = std::string("temp" + get_arg_index());
             add_variable_to_symbol_table(tmpName, t);
 
-            tmp->code = std::string(". ") + tmpName + std::string("\n");
-            tmp->code += op->code + tmpName + std::string(", ") + lhs->code + std::string(", ") + rhs->code + std::string("\n");
+            tmp->code = "";
+            if (lhs->code != lhs->var) {
+                tmp->code += lhs->code;
+            }
+            if (rhs->code != rhs->var) {
+                tmp->code += rhs->code;
+            }
+
+            tmp->code += std::string(". ") + tmpName + std::string("\n");
+            tmp->code += op->code + tmpName + std::string(", ") + lhs->var + std::string(", ") + rhs->var + std::string("\n");
 
             tmp->var = tmpName;
             $$ = tmp;
@@ -627,6 +669,9 @@
             temp->code = std::string(". ") + tmp + std::string("\n");
             if (lhs->code != lhs->var) {
                 temp->code += lhs->code;
+            }
+            if (rhs->code != rhs->var) {
+                temp->code += rhs->code;
             }
 
             temp->code += op->code + tmp + std::string(", ") + lhs->var + std::string(", ") + rhs->var + std::string("\n");
