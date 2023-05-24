@@ -64,11 +64,8 @@
     bool iterate_functions(std::string &function_name){
         for(int i = 0; i < symbol_table.size(); i++){
             Function *func = &symbol_table[i];
-            for(int j = 0; j < func->declarations.size(); j++){
-                Symbol *s = &func->declarations[j];
-                if (s->name == function_name) {
-                    return true;
-                }
+            if(func->name.c_str() == function_name){
+                return true;
             }
         }
     }
@@ -173,11 +170,11 @@
             printf("\n");
             printf("%s\n", code.c_str());
 
-            /*std::string main_func = "main";
+            std::string main_func = "main";
             std::string fn_call_fn_error = "The function main has not been declared in the program yet\n";
-            if(!find(main_func)){
+            if(!iterate_functions(main_func)){
                 yyerror(fn_call_fn_error.c_str());
-            }*/
+            }
         }
 
     functions: 
