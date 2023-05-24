@@ -260,10 +260,11 @@
             std::string value = $2;
             
             Type t = Integer;
-            if (!find(value, Integer)) {
-                yyerror("The variable has not been declared\n");
-            } else {
-                add_variable_to_symbol_table(value, t);
+            // if (!find(value, Integer)) {
+            //     yyerror("The variable has not been declared\n");
+            // } else {
+            
+            add_variable_to_symbol_table(value, t);
             // add_variable_to_symbol_table(value, t);
 
             std::string code = std::string(". ") + value + std::string("\n");
@@ -271,7 +272,6 @@
             node->code = code;
             node->code += std::string("= ") + value + std::string(", $") + get_arg_index() + std::string("\n"); //FIXME: make it dynamic
             $$ = node;
-            }
         }
     
     statements: 
@@ -798,18 +798,18 @@
             CodeNode *lhs = $1;
             CodeNode *rhs = $3;
             CodeNode *op = $2;
-            std::string lhs_error = "The variable " + lhs->var + " has not been declared yet\n";
-            std::string rhs_error = "The variable " + rhs->var + " has not been declared yet\n";
+            // std::string lhs_error = "The variable " + lhs->var + " has not been declared yet\n";
+            // std::string rhs_error = "The variable " + rhs->var + " has not been yet\n";
             CodeNode *temp = new CodeNode;
             
             Type t = Integer;
             std::string tmp = std::string("temp" + get_arg_index());            
-            if (!find(lhs->var, Integer) && (!find(lhs->var, Array))) {
-                yyerror(lhs_error.c_str());
-            }
-            else if (!find(rhs->var, Integer) && (!find(rhs->var, Array))) {
-                yyerror(rhs_error.c_str());
-            }
+            // if (!find(lhs->var, Integer) && (!find(lhs->var, Array))) {
+            //     yyerror(lhs_error.c_str());
+            // }
+            // else if (!find(rhs->var, Integer) && (!find(rhs->var, Array))) {
+            //     yyerror(rhs_error.c_str());
+            // }
             add_variable_to_symbol_table(tmp, t);
 
             temp->code = std::string(". ") + tmp + std::string("\n");
