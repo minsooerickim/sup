@@ -50,16 +50,17 @@
     // grab the most recent function, and linear search to
     // find the symbol you are looking for.
     // you may want to extend "find" to handle different types of "Integer" vs "Array"
-    bool find(std::string &value) {
+    bool find(std::string &value, Type type) {
         Function *f = get_function();
-        for(int i=0; i < f->declarations.size(); i++) {
+        for (int i = 0; i < f->declarations.size(); i++) {
             Symbol *s = &f->declarations[i];
-            if (s->name == value) {
-            return true;
+            if (s->name == value && s->type == type) {
+                return true;
             }
         }
         return false;
     }
+
 
     // when you see a function declaration inside the grammar, add
     // the function name to the symbol table
@@ -244,7 +245,7 @@
             std::string value = $2;
             
             Type t = Integer;
-            if (!find(value)) {
+            if (!find(value, Integer)) {
                 yyerror("The variable has not been declared\n");
             } else {
                 add_variable_to_symbol_table(value, t);
@@ -350,11 +351,11 @@
         INT IDENT {
             std::string value = $2;
             Type t = Integer;
-            std::string keyword_error = "The variable " + value + " cannot have the same name as a reserved keyword\n";
-            if ((value == "int") || (value == "sup") || (value == "vibin") || (value == "wbu") || (value == "chillin") || (value == "yessir") || (value == "stop") || (value == "supin") || (value == "supout") || (value == "return")) {
-                yyerror(keyword_error.c_str());
-            }
-            if (find(value)) {
+            // std::string keyword_error = "The variable " + value + " cannot have the same name as a reserved keyword\n";
+            // if ((value == "int") || (value == "sup") || (value == "vibin") || (value == "wbu") || (value == "chillin") || (value == "yessir") || (value == "stop") || (value == "supin") || (value == "supout") || (value == "return")) {
+            //     yyerror(keyword_error.c_str());
+            // }
+            if (find(value, Integer)) {
                 yyerror("The variable has already been declared\n");
             } else {
                 add_variable_to_symbol_table(value, t);
@@ -371,7 +372,7 @@
             std::string array_size = std::to_string($4);
 
             Type t = Array;
-            if (find(value)) {
+            if (find(value, Array)) {
                 yyerror("The array has already been declared\n");
             }
             add_variable_to_symbol_table(value, t);
@@ -577,10 +578,10 @@
             std::string second_var = $3;
             std::string first_var_error = "The variable " + first_var + " has not been declared yet\n";
             std::string second_var_error = "The variable " + second_var + " has not been declared yet\n";
-            if (!find(first_var)) {
+            if (!find(first_var, Integer) && !find(first_var, Array)) {
                 yyerror(first_var_error.c_str());
             } 
-            else if (!find(second_var)) {
+            else if (!find(second_var, Integer) && !find(second_var, Array)) {
                 yyerror(second_var_error.c_str());
             }
             else {
@@ -593,7 +594,7 @@
         IDENT ASSIGNMENT INTEGER {
             std::string first_var = $1;
             std::string first_var_error = "The variable " + first_var + " has not been declared yet\n";
-            if (!find(first_var)) {
+            if (!find(first_var, Integer)) {
                 yyerror(first_var_error.c_str());
             } 
             CodeNode *node = new CodeNode;
@@ -644,8 +645,7 @@
             node->code = ops->code + std::string("= ") + dst + std::string(", ") + ops->var + std::string("\n");
             $$ = node;
         }
-        /*
-        | 
+        /* | 
         INT IDENT ASSIGNMENT operations {
             std::string first_var = $2;
             Type t = Integer;
@@ -706,7 +706,10 @@
     expr: 
         IDENT {
             std::string ident = $1;
-
+            std::string ident_type_error = "The variable " + ident + " is defined as an array and is missing a specified index\n";
+            if (find(ident, Array)) {
+                yyerror(ident_type_error.c_str());
+            }
             CodeNode *node = new CodeNode;
             node->code = ident;
             node->var = ident;
@@ -727,6 +730,10 @@
             
             CodeNode *tmp = new CodeNode;
             Type t = Integer;
+            std::string int_type_error = "The variable " + arr->var + " is not defined as an array so it does not have a specified index\n";
+            if (find(arr->var, Integer)) {
+                yyerror(int_type_error.c_str());
+            }
             std::string tmpName = std::string("temp" + get_arg_index());
             tmp->var = tmpName;
             tmp->code = std::string(". ") + tmpName + std::string("\n");
@@ -767,11 +774,18 @@
             CodeNode *lhs = $1;
             CodeNode *rhs = $3;
             CodeNode *op = $2;
-
+            std::string lhs_error = "The variable " + lhs->var + " has not been declared yet\n";
+            std::string rhs_error = "The variable " + rhs->var + " has not been declared yet\n";
             CodeNode *temp = new CodeNode;
             
             Type t = Integer;
-            std::string tmp = std::string("temp" + get_arg_index());
+            std::string tmp = std::string("temp" + get_arg_index());            
+            if (!find(lhs->var, Integer) && (!find(lhs->var, Array))) {
+                yyerror(lhs_error.c_str());
+            }
+            else if (!find(rhs->var, Integer) && (!find(rhs->var, Array))) {
+                yyerror(rhs_error.c_str());
+            }
             add_variable_to_symbol_table(tmp, t);
 
             temp->code = std::string(". ") + tmp + std::string("\n");
