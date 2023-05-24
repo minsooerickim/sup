@@ -565,7 +565,10 @@
         IDENT L_BRACKET INTEGER R_BRACKET {
             std::string arr_ident = $1;
             std::string arr_idx = $3;
-
+            std::string ident_type_error = "The variable " + arr_ident + " is not defined as an array\n";
+            if (!find(arr_ident, Array)) {
+                yyerror(ident_type_error.c_str());
+            }
             CodeNode *node = new CodeNode;
             node->var = arr_ident;
             node->arr_idx = arr_idx;
@@ -645,7 +648,7 @@
             node->code = ops->code + std::string("= ") + dst + std::string(", ") + ops->var + std::string("\n");
             $$ = node;
         }
-        /* | 
+        | 
         INT IDENT ASSIGNMENT operations {
             std::string first_var = $2;
             Type t = Integer;
@@ -656,12 +659,12 @@
             node->code = code;
             $$ = node; 
 
-            Type t = Integer;
-            CodeNode *node = new CodeNode;
-            node->code = $4->code;
-            node->code += std::string("= ") + first_var + std::string(", ") + $4->name + std::string("\n");
-            $$ = node;
-        } */
+            // Type t = Integer;
+            CodeNode *node2 = new CodeNode;
+            node2->code = $4->code;
+            node2->code += std::string("= ") + first_var + std::string(", ") + $4->name + std::string("\n");
+            $$ = node2;
+        }
         | 
         IDENT ASSIGNMENT function_call {
             std::string dst = $1;
