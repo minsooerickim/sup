@@ -60,6 +60,18 @@
         }
         return false;
     }
+    //separate find function
+    bool iterate_functions(std::string &function_name){
+        for(int i = 0; i < symbol_table.size(); i++){
+            Function *func = &symbol_table[i];
+            for(int j = 0; j < func->declarations.size(); j++){
+                Symbol *s = &func->declarations[j];
+                if (s->name == function_name) {
+                    return true;
+                }
+            }
+        }
+    }
 
     // when you see a function declaration inside the grammar, add
     // the function name to the symbol table
@@ -160,6 +172,12 @@
             std::string code = node->code;
             printf("\n");
             printf("%s\n", code.c_str());
+
+            /*std::string main_func = "main";
+            std::string fn_call_fn_error = "The function main has not been declared in the program yet\n";
+            if(!find(main_func)){
+                yyerror(fn_call_fn_error.c_str());
+            }*/
         }
 
     functions: 
@@ -197,7 +215,7 @@
 
     add_fn_to_symb_tbl:
         IDENT {
-            std::string func_name = $1;
+            std::string func_name = $1; 
             
             CodeNode *node = new CodeNode;
             node->code = "";
@@ -324,7 +342,13 @@
             std::string func_ident = $1;
             CodeNode *args = $3;
 
+            std::string fn_call_fn_error = "The function " + func_ident + " has not been declared in the program yet\n";
+            if(!iterate_functions(func_ident)){
+                yyerror(fn_call_fn_error.c_str());
+            }
+
             std::string code = std::string("call ") + func_ident;
+
             CodeNode *node = new CodeNode;
 
             node->code = args->code + code;
@@ -730,6 +754,7 @@
             $$ = node;
         }
 %%
+    
 
 #include <stdlib.h>
 
