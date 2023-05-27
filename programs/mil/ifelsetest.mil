@@ -1,0 +1,12 @@
+func main
+. m
+. n
+. o
+.< n
+. temp2
+>= temp2,n,100
+?:= label4, temp2
+:= label3
+: label4
+.> n
+endfunc
