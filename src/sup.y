@@ -295,7 +295,14 @@
             $$ = node;
         };
         | 
-        ifs statements {}
+        ifs statements {
+            CodeNode *ifstmt = $1;
+            CodeNode *stmts = $2;
+
+            CodeNode *node = new CodeNode;
+            node->code = ifstmt->code + stmts->code;
+            $$ = node;
+        }
         | 
         whiles statements {}
 
@@ -523,6 +530,9 @@
             Type t = Integer;
             add_variable_to_symbol_table(label, t);
 
+            std::string end_label = std::string("label" + get_arg_index());
+            add_variable_to_symbol_table(end_label, t);
+
             node->var = label;
 
             node->code = comparison->code;
@@ -531,6 +541,10 @@
 
             node->code += std::string(": ") + label + std::string("\n");
             node->code += stmts->code + terminals->code;
+            node->code += std::string(":= ") + end_label + std::string("\n");
+
+            node->code += elsestmt->code;
+            node->code += std::string(": ") + end_label + std::string("\n");
 
             $$ = node;
         }
@@ -552,7 +566,7 @@
             CodeNode *terminals = $4;
 
             CodeNode *node = new CodeNode;
-            std::string label = std::string("label" + get_arg_index() + "\n");
+            std::string label = std::string("label" + get_arg_index());
             Type t = Integer;
             add_variable_to_symbol_table(label, t);
 
