@@ -96,6 +96,18 @@
         return str_size;
     }
 
+    int get_loop_index() {
+        Function *f = get_function();
+        int count = 0;
+        for (int i = 0; i < f->declarations.size(); i++) {
+            Symbol *s = &f->declarations[i];
+            if(strncmp(s->name.c_str(), "endloop", 7) == 0) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+
     // a function to print out the symbol table to the screen
     // largely for debugging purposes.
     void print_symbol_table(void) {
@@ -548,7 +560,9 @@
             
             node->code += stmts->code;
             if (terminals->code == "break") {
-                node->code += std::string(":= endloop8 ") + std::string("\n"); //TODO: make it dynamic; helper fn to get end_loop label?
+                std::string end_loop_idx = std::to_string(get_loop_index());
+
+                node->code += std::string(":= endloop") + end_loop_idx + std::string("\n");
             }
 
             node->code += std::string(":= ") + end_label + std::string("\n");
@@ -603,7 +617,7 @@
             std::string loopbody = std::string("loopbody" + get_arg_index());
             add_variable_to_symbol_table(loopbody, t);
 
-            std::string endloop = std::string("endloop" + get_arg_index());
+            std::string endloop = std::string("endloop" + std::to_string(get_loop_index()));
             add_variable_to_symbol_table(endloop, t);
 
             node->var = beginloop;
