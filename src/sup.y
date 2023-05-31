@@ -538,10 +538,19 @@
 
             node->code = comparison->code;
             node->code += std::string("?:= ") + label + std::string(", ") + comparison->var + std::string("\n");
-            node->code += std::string(":= ") + elsestmt->var + std::string("\n");
+            if (elsestmt->code != "") {
+                node->code += std::string(":= ") + elsestmt->var + std::string("\n");
+            } else {
+                node->code += std::string(":= ") + end_label + std::string("\n");
+            }
 
             node->code += std::string(": ") + label + std::string("\n");
-            node->code += stmts->code + terminals->code;
+            
+            node->code += stmts->code;
+            if (terminals->code == "break") {
+                node->code += std::string(":= endloop8 ") + std::string("\n"); //TODO: make it dynamic; helper fn to get end_loop label?
+            }
+
             node->code += std::string(":= ") + end_label + std::string("\n");
 
             node->code += elsestmt->code;
@@ -606,7 +615,10 @@
             node->code += std::string(":= ") + endloop + std::string("\n");
             node->code += std::string(": ") + loopbody + std::string("\n");
             
-            node->code += stmts->code + terminals->code;
+            node->code += stmts->code;
+            if (terminals->code == "break") {
+                node->code += std::string(":= ") + endloop + std::string("\n");
+            }
 
             node->code += std::string(":= ") + beginloop + std::string("\n");
             node->code += std::string(": ") + endloop + std::string("\n");
@@ -697,7 +709,11 @@
             $$ = node;
         }
         | 
-        BREAK SEMICOLON {}
+        BREAK SEMICOLON {
+            CodeNode *node = new CodeNode;
+            node->code = "break";
+            $$ = node;
+        }
         | 
         CONTINUE SEMICOLON {}
     
