@@ -1,0 +1,18 @@
+func main
+. a
+. b
+. c
+= a, 100
+= b, 50
+. temp2
+< temp2,a,b
+?:= label4, temp2
+:= label3
+: label4
+= c, b
+:= label5
+: label3
+= c, a
+: label5
+.> c
+endfunc

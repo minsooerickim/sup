@@ -1,19 +1,18 @@
 main() int #;) main program
-    int m@
-    int n@
-    int o@
+    int a@
+    int b@
+    int c@
 
-    supin -> n@
+    a = 100@
+    b = 50@
 
-    sup (n >= 100) #
+    sup (a < b) #
         vibin #
-            supout <- n@
+            c = b@
         #
         wbu #
-            m = n-1@
-            supout <- m@
+            c = a@
         #
     #
-    supout <- o@
-    supout <- o@
+    supout <- c@
 #

@@ -153,6 +153,12 @@
 %type  <node>   write
 %type  <node>   return
 %type  <node>   repeat_arguments
+%type  <node>   comparison
+%type  <node>   compare
+%type  <node>   else
+%type  <node>   terminals
+%type  <node>   ifs
+
 
 
 
@@ -289,7 +295,14 @@
             $$ = node;
         };
         | 
-        ifs statements {}
+        ifs statements {
+            CodeNode *ifstmt = $1;
+            CodeNode *stmts = $2;
+
+            CodeNode *node = new CodeNode;
+            node->code = ifstmt->code + stmts->code;
+            $$ = node;
+        }
         | 
         whiles statements {}
 
@@ -506,44 +519,154 @@
         }
 
     ifs: 
-        IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET 
+        IF L_PARENT comparison R_PARENT BRACKET THEN BRACKET statements terminals BRACKET else BRACKET {
+            CodeNode *comparison = $3;
+            CodeNode *stmts = $8;
+            CodeNode *terminals = $9;
+            CodeNode *elsestmt = $11;
+
+            CodeNode *node = new CodeNode;
+            std::string label = std::string("label" + get_arg_index());
+            Type t = Integer;
+            add_variable_to_symbol_table(label, t);
+
+            std::string end_label = std::string("label" + get_arg_index());
+            add_variable_to_symbol_table(end_label, t);
+
+            node->var = label;
+
+            node->code = comparison->code;
+            node->code += std::string("?:= ") + label + std::string(", ") + comparison->var + std::string("\n");
+            node->code += std::string(":= ") + elsestmt->var + std::string("\n");
+
+            node->code += std::string(": ") + label + std::string("\n");
+            node->code += stmts->code + terminals->code;
+            node->code += std::string(":= ") + end_label + std::string("\n");
+
+            node->code += elsestmt->code;
+            node->code += std::string(": ") + end_label + std::string("\n");
+
+            $$ = node;
+        }
     
     else: 
-        %empty 
+        %empty {
+            CodeNode *node = new CodeNode;
+            std::string label = std::string("label" + get_arg_index());
+            Type t = Integer;
+            add_variable_to_symbol_table(label, t);
+
+            node->code = "";
+            node->var = label;
+            $$ = node;
+        }
         | 
-        ELSE BRACKET statements terminals BRACKET 
+        ELSE BRACKET statements terminals BRACKET {
+            CodeNode *stmts = $3;
+            CodeNode *terminals = $4;
+
+            CodeNode *node = new CodeNode;
+            std::string label = std::string("label" + get_arg_index());
+            Type t = Integer;
+            add_variable_to_symbol_table(label, t);
+
+            node->var = label;
+
+            node->code = std::string(": ") + label + std::string("\n");
+            node->code += stmts->code + terminals->code;
+
+            $$ = node;
+        }
     
     whiles: 
         WHILE L_PARENT comparison R_PARENT BRACKET statements terminals BRACKET 
     
     comparison: 
-        IDENT compare IDENT 
+        IDENT compare IDENT {
+            CodeNode *compare = $2;
+            std::string lhs = $1;
+            std::string rhs = $3;
+
+            CodeNode *node = new CodeNode;
+            
+            Type t = Integer;
+            std::string tmp = std::string("temp" + get_arg_index());
+            node->code = std::string(". ") + tmp + std::string("\n");            
+            add_variable_to_symbol_table(tmp, t);
+
+            node->code += compare->code + tmp + std::string(",") + lhs + std::string(",") + rhs + std::string("\n");
+            node->var = tmp;
+            $$ = node;
+        }
         | 
-        IDENT compare INTEGER 
+        IDENT compare INTEGER {
+            CodeNode *compare = $2;
+            std::string lhs = $1;
+            std::string rhs = $3;
+
+            CodeNode *node = new CodeNode;
+            
+            Type t = Integer;
+            std::string tmp = std::string("temp" + get_arg_index()); 
+            node->code = std::string(". ") + tmp + std::string("\n");                       
+            add_variable_to_symbol_table(tmp, t);
+
+            node->code += compare->code + tmp + std::string(",") + lhs + std::string(",") + rhs + std::string("\n");
+            node->var = tmp;
+            $$ = node;
+        }
         | 
-        INTEGER compare IDENT 
+        INTEGER compare IDENT {}
         | 
-        INTEGER compare INTEGER 
+        INTEGER compare INTEGER {}
 
     compare: 
-        EQ 
+        EQ {
+            CodeNode *eq = new CodeNode;
+            eq->code = "== ";
+            $$ = eq;
+        }
         | 
-        GT 
+        GT {
+            CodeNode *gt = new CodeNode;
+            gt->code = "> ";
+            $$ = gt;
+        } 
         | 
-        LT 
+        LT {
+            CodeNode *lt = new CodeNode;
+            lt->code = "< ";
+            $$ = lt;
+        }
         | 
-        GTE 
+        GTE {
+            CodeNode *gte = new CodeNode;
+            gte->code = ">= ";
+            $$ = gte;
+        }
         | 
-        LTE 
+        LTE {
+            CodeNode *lte = new CodeNode;
+            lte->code = "<= ";
+            $$ = lte;
+        }
         | 
-        NEQ
+        NEQ {
+            CodeNode *neq = new CodeNode;
+            neq->code = "!= ";
+            $$ = neq;
+        }
 
     terminals: 
-        %empty 
+        %empty {
+            CodeNode *node = new CodeNode;
+            node->code = "";
+            $$ = node;
+        }
         | 
-        BREAK SEMICOLON
+        BREAK SEMICOLON {}
         | 
-        CONTINUE SEMICOLON
+        CONTINUE SEMICOLON {}
     
     read: 
         READ IDENT {
