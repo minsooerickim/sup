@@ -158,6 +158,7 @@
 %type  <node>   else
 %type  <node>   terminals
 %type  <node>   ifs
+%type  <node>   whiles
 
 
 
@@ -579,7 +580,39 @@
         }
     
     whiles: 
-        WHILE L_PARENT comparison R_PARENT BRACKET statements terminals BRACKET 
+        WHILE L_PARENT comparison R_PARENT BRACKET statements terminals BRACKET {
+            CodeNode *comparison = $3;
+            CodeNode *stmts = $6;
+            CodeNode *terminals = $7;
+
+            CodeNode *node = new CodeNode;
+
+            std::string beginloop = std::string("beginloop" + get_arg_index());
+            Type t = Integer;
+            add_variable_to_symbol_table(beginloop, t);
+
+            std::string loopbody = std::string("loopbody" + get_arg_index());
+            add_variable_to_symbol_table(loopbody, t);
+
+            std::string endloop = std::string("endloop" + get_arg_index());
+            add_variable_to_symbol_table(endloop, t);
+
+            node->var = beginloop;
+
+            node->code += std::string(": ") + beginloop + std::string("\n");
+            node->code += comparison->code;
+
+            node->code += std::string("?:= ") + loopbody + std::string(", ") + comparison->var + std::string("\n");
+            node->code += std::string(":= ") + endloop + std::string("\n");
+            node->code += std::string(": ") + loopbody + std::string("\n");
+            
+            node->code += stmts->code + terminals->code;
+
+            node->code += std::string(":= ") + beginloop + std::string("\n");
+            node->code += std::string(": ") + endloop + std::string("\n");
+
+            $$ = node;
+        }
     
     comparison: 
         IDENT compare IDENT {
