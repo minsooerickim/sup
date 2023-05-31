@@ -5,7 +5,7 @@ func main
 . temp0
 <= temp0,i,10
 ?:= loopbody7, temp0
-:= endloop8
+:= endloop0
 : loopbody7
 .> i
 . temp1
@@ -13,12 +13,12 @@ func main
 ?:= label3, temp1
 := label4
 : label3
-:= endloop8 
+:= endloop0
 := label4
 : label4
 . temp5
 + temp5, i, 1
 = i, temp5
 := beginloop6
-: endloop8
+: endloop0
 endfunc
