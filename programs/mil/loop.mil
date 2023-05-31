@@ -1,0 +1,16 @@
+func main
+. i
+= i, 0
+: beginloop2
+. temp0
+< temp0,i,10
+?:= loopbody3, temp0
+:= endloop4
+: loopbody3
+. temp1
++ temp1, i, 1
+= i, temp1
+.> i
+:= beginloop2
+: endloop4
+endfunc
