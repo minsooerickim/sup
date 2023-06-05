@@ -318,11 +318,11 @@
         }
         | 
         whiles statements {
-        CodeNode *whilestmt = $1;
-        CodeNode *stmts = $2;
-        CodeNode *node = new CodeNode;
-        node->code = whilestmt->code + stmts->code;
-        $$ = node;            
+            CodeNode *whilestmt = $1;
+            CodeNode *stmts = $2;
+            CodeNode *node = new CodeNode;
+            node->code = whilestmt->code + stmts->code;
+            $$ = node;            
         }
 
     statement: 
