@@ -1,0 +1,13 @@
+main() int #
+  int i@
+  int j@
+  i = 0@
+  chillin (i < 2) #
+    j = 1@
+    chillin (j <= 3) #
+        supout <- j@
+        j = j + 1@
+    #
+    i = i + 1@
+  #
+#
