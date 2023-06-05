@@ -306,7 +306,7 @@
             CodeNode *node = new CodeNode;
             node->code = stmt1->code + stmt2->code;
             $$ = node;
-        };
+        }
         | 
         ifs statements {
             CodeNode *ifstmt = $1;
@@ -317,9 +317,15 @@
             $$ = node;
         }
         | 
-        whiles statements {}
+        whiles statements {
+            CodeNode *whilestmt = $1;
+            CodeNode *stmts = $2;
+            CodeNode *node = new CodeNode;
+            node->code = whilestmt->code + stmts->code;
+            $$ = node;            
+        }
 
-    statement:  
+    statement: 
         %empty {
             CodeNode *node = new CodeNode;
             node->code = "";
@@ -327,14 +333,15 @@
         }
         | declaration 
         | function_call 
-        | return {}
+        | return { 
+            $$ = $1;
+            delete $1;
+         }
         | array_access 
         | assignment 
-        | operations {
-            $$ = $1;
-        }
+        | operations { $$ = $1; }
         | read 
-        | write {}
+        | write { $$ = $1; }
     
     declaration:
         INT INT {
@@ -1043,7 +1050,13 @@
         }
 
     return: 
-        RETURN IDENT {}
+        RETURN IDENT {
+            std::string val = $2;
+
+            CodeNode *node = new CodeNode;
+            node->code = std::string("ret ") + val + std::string("\n");
+            $$ = node;
+        }
         | 
         RETURN INTEGER {
             std::string val = $2;
@@ -1055,12 +1068,13 @@
         | 
         RETURN statement {
             CodeNode *stmt = $2;
-
             CodeNode *node = new CodeNode;
             node->code = stmt->code;
             node->code += std::string("ret ") + stmt->var + std::string("\n");
+            delete stmt; // Free memory occupied by stmt
             $$ = node;
         }
+
 %%
     
 

@@ -1,0 +1,29 @@
+func main
+. i
+. j
+= i, 0
+: beginloop8
+. temp1
+< temp1,i,2
+?:= loopbody9, temp1
+:= endloop1
+: loopbody9
+= j, 1
+: beginloop4
+. temp2
+<= temp2,j,3
+?:= loopbody5, temp2
+:= endloop0
+: loopbody5
+.> j
+. temp3
++ temp3, j, 1
+= j, temp3
+:= beginloop4
+: endloop0
+. temp7
++ temp7, i, 1
+= i, temp7
+:= beginloop8
+: endloop1
+endfunc
